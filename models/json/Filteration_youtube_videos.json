@@ -1,0 +1,1195 @@
+{
+  "id": "dc02eefb-5bb3-404b-b8af-33e6f6f793a7",
+  "data": {
+    "nodes": [
+      {
+        "id": "Prompt-nxIyu",
+        "type": "genericNode",
+        "position": {
+          "x": 574.9155329949239,
+          "y": 156.293807106599
+        },
+        "data": {
+          "node": {
+            "template": {
+              "_type": "Component",
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "from langflow.base.prompts.api_utils import process_prompt_template\nfrom langflow.custom import Component\nfrom langflow.inputs.inputs import DefaultPromptField\nfrom langflow.io import Output, PromptInput\nfrom langflow.schema.message import Message\nfrom langflow.template.utils import update_template_values\n\n\nclass PromptComponent(Component):\n    display_name: str = \"Prompt\"\n    description: str = \"Create a prompt template with dynamic variables.\"\n    icon = \"prompts\"\n    trace_type = \"prompt\"\n    name = \"Prompt\"\n\n    inputs = [\n        PromptInput(name=\"template\", display_name=\"Template\"),\n    ]\n\n    outputs = [\n        Output(display_name=\"Prompt Message\", name=\"prompt\", method=\"build_prompt\"),\n    ]\n\n    async def build_prompt(self) -> Message:\n        prompt = Message.from_template(**self._attributes)\n        self.status = prompt.text\n        return prompt\n\n    def _update_template(self, frontend_node: dict):\n        prompt_template = frontend_node[\"template\"][\"template\"][\"value\"]\n        custom_fields = frontend_node[\"custom_fields\"]\n        frontend_node_template = frontend_node[\"template\"]\n        _ = process_prompt_template(\n            template=prompt_template,\n            name=\"template\",\n            custom_fields=custom_fields,\n            frontend_node_template=frontend_node_template,\n        )\n        return frontend_node\n\n    def post_code_processing(self, new_frontend_node: dict, current_frontend_node: dict):\n        \"\"\"This function is called after the code validation is done.\"\"\"\n        frontend_node = super().post_code_processing(new_frontend_node, current_frontend_node)\n        template = frontend_node[\"template\"][\"template\"][\"value\"]\n        # Kept it duplicated for backwards compatibility\n        _ = process_prompt_template(\n            template=template,\n            name=\"template\",\n            custom_fields=frontend_node[\"custom_fields\"],\n            frontend_node_template=frontend_node[\"template\"],\n        )\n        # Now that template is updated, we need to grab any values that were set in the current_frontend_node\n        # and update the frontend_node with those values\n        update_template_values(new_template=frontend_node, previous_template=current_frontend_node[\"template\"])\n        return frontend_node\n\n    def _get_fallback_input(self, **kwargs):\n        return DefaultPromptField(**kwargs)\n",
+                "fileTypes": [],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": true,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "template": {
+                "tool_mode": false,
+                "trace_as_input": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "template",
+                "value": "You are an AI assistant. Given data from 20 YouTube videos (including name and description), along with a specific subtopic and its related main topic, your task is to identify the best 5 videos for learning that skill.  \n\n### Requirements:  \n1. Analyze the provided video data and rank the videos based on their relevance and quality for learning the given subtopic.  \n2. Ensure the selected videos are the most effective resources for skill acquisition.  \n3. Output only in **strict JSON format**, containing the embedding URLs of the top 5 videos.  \n4. No additional explanation text—just return the JSON response.  \n\n**Input:**  \n- `videos_data`: A list containing YouTube video details (name, description, etc.).  \n- `subtopic`: The specific skill or concept being searched.  \n- `main_topic`: The broader category under which the subtopic falls.  \n\nFor this response :\n1. video_data - {data}.\n2.subtopic -{subtopic}.\n3.maintopic - {maintopic}.\n**Output Example:**  \n```json\n(\n  \"best_videos\": [\n    \"https://www.youtube.com/embed/VIDEO_ID1\",\n    \"https://www.youtube.com/embed/VIDEO_ID2\",\n    \"https://www.youtube.com/embed/VIDEO_ID3\",\n    \"https://www.youtube.com/embed/VIDEO_ID4\",\n    \"https://www.youtube.com/embed/VIDEO_ID5\"\n  ]\n)\n",
+                "display_name": "Template",
+                "advanced": false,
+                "dynamic": false,
+                "info": "",
+                "title_case": false,
+                "type": "prompt",
+                "_input_type": "PromptInput",
+                "load_from_db": false
+              },
+              "data": {
+                "field_type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "fileTypes": [],
+                "file_path": "",
+                "name": "data",
+                "display_name": "data",
+                "advanced": false,
+                "input_types": [
+                  "Message",
+                  "Text"
+                ],
+                "dynamic": false,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false,
+                "type": "str"
+              },
+              "subtopic": {
+                "field_type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "fileTypes": [],
+                "file_path": "",
+                "name": "subtopic",
+                "display_name": "subtopic",
+                "advanced": false,
+                "input_types": [
+                  "Message",
+                  "Text"
+                ],
+                "dynamic": false,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false,
+                "type": "str"
+              },
+              "maintopic": {
+                "field_type": "str",
+                "required": false,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "",
+                "fileTypes": [],
+                "file_path": "",
+                "name": "maintopic",
+                "display_name": "maintopic",
+                "advanced": false,
+                "input_types": [
+                  "Message",
+                  "Text"
+                ],
+                "dynamic": false,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false,
+                "type": "str"
+              }
+            },
+            "description": "Create a prompt template with dynamic variables.",
+            "icon": "prompts",
+            "base_classes": [
+              "Message"
+            ],
+            "display_name": "Prompt",
+            "documentation": "",
+            "custom_fields": {
+              "template": [
+                "data",
+                "subtopic",
+                "maintopic"
+              ]
+            },
+            "output_types": [],
+            "pinned": false,
+            "conditional_paths": [],
+            "frozen": false,
+            "outputs": [
+              {
+                "types": [
+                  "Message"
+                ],
+                "selected": "Message",
+                "name": "prompt",
+                "display_name": "Prompt Message",
+                "method": "build_prompt",
+                "value": "__UNDEFINED__",
+                "cache": true
+              }
+            ],
+            "field_order": [
+              "template"
+            ],
+            "beta": false,
+            "legacy": false,
+            "edited": false,
+            "metadata": {},
+            "tool_mode": false,
+            "lf_version": "1.1.1"
+          },
+          "showNode": true,
+          "type": "Prompt",
+          "id": "Prompt-nxIyu"
+        },
+        "selected": false,
+        "width": 320,
+        "height": 516
+      },
+      {
+        "id": "GroqModel-F4G8v",
+        "type": "genericNode",
+        "position": {
+          "x": 945.432700309904,
+          "y": 601.2140584023454
+        },
+        "data": {
+          "node": {
+            "template": {
+              "_type": "Component",
+              "output_parser": {
+                "trace_as_metadata": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "output_parser",
+                "value": "",
+                "display_name": "Output Parser",
+                "advanced": true,
+                "input_types": [
+                  "OutputParser"
+                ],
+                "dynamic": false,
+                "info": "The parser to use to parse the output of the model",
+                "title_case": false,
+                "type": "other",
+                "_input_type": "HandleInput"
+              },
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "import requests\nfrom pydantic.v1 import SecretStr\nfrom typing_extensions import override\n\nfrom langflow.base.models.groq_constants import GROQ_MODELS\nfrom langflow.base.models.model import LCModelComponent\nfrom langflow.field_typing import LanguageModel\nfrom langflow.inputs.inputs import HandleInput\nfrom langflow.io import DropdownInput, FloatInput, IntInput, MessageTextInput, SecretStrInput\n\n\nclass GroqModel(LCModelComponent):\n    display_name: str = \"Groq\"\n    description: str = \"Generate text using Groq.\"\n    icon = \"Groq\"\n    name = \"GroqModel\"\n\n    inputs = [\n        *LCModelComponent._base_inputs,\n        SecretStrInput(name=\"groq_api_key\", display_name=\"Groq API Key\", info=\"API key for the Groq API.\"),\n        MessageTextInput(\n            name=\"groq_api_base\",\n            display_name=\"Groq API Base\",\n            info=\"Base URL path for API requests, leave blank if not using a proxy or service emulator.\",\n            advanced=True,\n            value=\"https://api.groq.com\",\n        ),\n        IntInput(\n            name=\"max_tokens\",\n            display_name=\"Max Output Tokens\",\n            info=\"The maximum number of tokens to generate.\",\n            advanced=True,\n        ),\n        FloatInput(\n            name=\"temperature\",\n            display_name=\"Temperature\",\n            info=\"Run inference with this temperature. Must by in the closed interval [0.0, 1.0].\",\n            value=0.1,\n        ),\n        IntInput(\n            name=\"n\",\n            display_name=\"N\",\n            info=\"Number of chat completions to generate for each prompt. \"\n            \"Note that the API may not return the full n completions if duplicates are generated.\",\n            advanced=True,\n        ),\n        DropdownInput(\n            name=\"model_name\",\n            display_name=\"Model\",\n            info=\"The name of the model to use.\",\n            options=GROQ_MODELS,\n            value=\"llama-3.1-8b-instant\",\n            refresh_button=True,\n        ),\n        HandleInput(\n            name=\"output_parser\",\n            display_name=\"Output Parser\",\n            info=\"The parser to use to parse the output of the model\",\n            advanced=True,\n            input_types=[\"OutputParser\"],\n        ),\n    ]\n\n    def get_models(self) -> list[str]:\n        api_key = self.groq_api_key\n        base_url = self.groq_api_base or \"https://api.groq.com\"\n        url = f\"{base_url}/openai/v1/models\"\n\n        headers = {\"Authorization\": f\"Bearer {api_key}\", \"Content-Type\": \"application/json\"}\n\n        try:\n            response = requests.get(url, headers=headers, timeout=10)\n            response.raise_for_status()\n            model_list = response.json()\n            return [model[\"id\"] for model in model_list.get(\"data\", [])]\n        except requests.RequestException as e:\n            self.status = f\"Error fetching models: {e}\"\n            return GROQ_MODELS\n\n    @override\n    def update_build_config(self, build_config: dict, field_value: str, field_name: str | None = None):\n        if field_name in {\"groq_api_key\", \"groq_api_base\", \"model_name\"}:\n            models = self.get_models()\n            build_config[\"model_name\"][\"options\"] = models\n        return build_config\n\n    def build_model(self) -> LanguageModel:  # type: ignore[type-var]\n        try:\n            from langchain_groq import ChatGroq\n        except ImportError as e:\n            msg = \"langchain-groq is not installed. Please install it with `pip install langchain-groq`.\"\n            raise ImportError(msg) from e\n\n        groq_api_key = self.groq_api_key\n        model_name = self.model_name\n        max_tokens = self.max_tokens\n        temperature = self.temperature\n        groq_api_base = self.groq_api_base\n        n = self.n\n        stream = self.stream\n\n        return ChatGroq(\n            model=model_name,\n            max_tokens=max_tokens or None,\n            temperature=temperature,\n            base_url=groq_api_base,\n            n=n or 1,\n            api_key=SecretStr(groq_api_key).get_secret_value(),\n            streaming=stream,\n        )\n",
+                "fileTypes": [],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": true,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "groq_api_base": {
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "load_from_db": false,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "groq_api_base",
+                "value": "https://api.groq.com",
+                "display_name": "Groq API Base",
+                "advanced": true,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "Base URL path for API requests, leave blank if not using a proxy or service emulator.",
+                "title_case": false,
+                "type": "str",
+                "_input_type": "MessageTextInput"
+              },
+              "groq_api_key": {
+                "load_from_db": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "groq_api_key",
+                "value": "",
+                "display_name": "Groq API Key",
+                "advanced": false,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "API key for the Groq API.",
+                "title_case": false,
+                "password": true,
+                "type": "str",
+                "_input_type": "SecretStrInput"
+              },
+              "input_value": {
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "load_from_db": false,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "input_value",
+                "value": "",
+                "display_name": "Input",
+                "advanced": false,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "",
+                "title_case": false,
+                "type": "str",
+                "_input_type": "MessageInput"
+              },
+              "max_tokens": {
+                "trace_as_metadata": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "max_tokens",
+                "value": "",
+                "display_name": "Max Output Tokens",
+                "advanced": true,
+                "dynamic": false,
+                "info": "The maximum number of tokens to generate.",
+                "title_case": false,
+                "type": "int",
+                "_input_type": "IntInput"
+              },
+              "model_name": {
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "options": [
+                  "distil-whisper-large-v3-en",
+                  "gemma2-9b-it",
+                  "gemma-7b-it",
+                  "llama3-groq-70b-8192-tool-use-preview",
+                  "llama3-groq-8b-8192-tool-use-preview",
+                  "llama-3.1-70b-versatile",
+                  "llama-3.1-8b-instant",
+                  "llama-3.2-1b-preview",
+                  "llama-3.2-3b-preview",
+                  "llama-3.2-11b-vision-preview",
+                  "llama-3.2-90b-vision-preview",
+                  "llama-guard-3-8b",
+                  "llama3-70b-8192",
+                  "llama3-8b-8192",
+                  "mixtral-8x7b-32768",
+                  "whisper-large-v3",
+                  "whisper-large-v3-turbo"
+                ],
+                "combobox": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "model_name",
+                "value": "llama3-8b-8192",
+                "display_name": "Model",
+                "advanced": false,
+                "dynamic": false,
+                "info": "The name of the model to use.",
+                "refresh_button": true,
+                "title_case": false,
+                "type": "str",
+                "_input_type": "DropdownInput",
+                "load_from_db": false
+              },
+              "n": {
+                "trace_as_metadata": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "n",
+                "value": "",
+                "display_name": "N",
+                "advanced": true,
+                "dynamic": false,
+                "info": "Number of chat completions to generate for each prompt. Note that the API may not return the full n completions if duplicates are generated.",
+                "title_case": false,
+                "type": "int",
+                "_input_type": "IntInput"
+              },
+              "stream": {
+                "trace_as_metadata": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "stream",
+                "value": false,
+                "display_name": "Stream",
+                "advanced": false,
+                "dynamic": false,
+                "info": "Stream the response from the model. Streaming works only in Chat.",
+                "title_case": false,
+                "type": "bool",
+                "_input_type": "BoolInput"
+              },
+              "system_message": {
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "load_from_db": false,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "system_message",
+                "value": "",
+                "display_name": "System Message",
+                "advanced": false,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "System message to pass to the model.",
+                "title_case": false,
+                "type": "str",
+                "_input_type": "MessageTextInput"
+              },
+              "temperature": {
+                "trace_as_metadata": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "temperature",
+                "value": 0.2,
+                "display_name": "Temperature",
+                "advanced": false,
+                "dynamic": false,
+                "info": "Run inference with this temperature. Must by in the closed interval [0.0, 1.0].",
+                "title_case": false,
+                "type": "float",
+                "_input_type": "FloatInput"
+              }
+            },
+            "description": "Generate text using Groq.",
+            "icon": "Groq",
+            "base_classes": [
+              "LanguageModel",
+              "Message"
+            ],
+            "display_name": "Groq",
+            "documentation": "",
+            "custom_fields": {},
+            "output_types": [],
+            "pinned": false,
+            "conditional_paths": [],
+            "frozen": false,
+            "outputs": [
+              {
+                "types": [
+                  "Message"
+                ],
+                "selected": "Message",
+                "name": "text_output",
+                "display_name": "Text",
+                "method": "text_response",
+                "value": "__UNDEFINED__",
+                "cache": true,
+                "required_inputs": []
+              },
+              {
+                "types": [
+                  "LanguageModel"
+                ],
+                "selected": "LanguageModel",
+                "name": "model_output",
+                "display_name": "Language Model",
+                "method": "build_model",
+                "value": "__UNDEFINED__",
+                "cache": true,
+                "required_inputs": []
+              }
+            ],
+            "field_order": [
+              "input_value",
+              "system_message",
+              "stream",
+              "groq_api_key",
+              "groq_api_base",
+              "max_tokens",
+              "temperature",
+              "n",
+              "model_name",
+              "output_parser"
+            ],
+            "beta": false,
+            "legacy": false,
+            "edited": false,
+            "metadata": {},
+            "tool_mode": false,
+            "lf_version": "1.1.1"
+          },
+          "showNode": true,
+          "type": "GroqModel",
+          "id": "GroqModel-F4G8v"
+        },
+        "selected": false,
+        "width": 320,
+        "height": 668,
+        "positionAbsolute": {
+          "x": 945.432700309904,
+          "y": 601.2140584023454
+        },
+        "dragging": false
+      },
+      {
+        "id": "TextInput-DdJSI",
+        "type": "genericNode",
+        "position": {
+          "x": 141.82477157360404,
+          "y": 37.999999999999986
+        },
+        "data": {
+          "node": {
+            "template": {
+              "_type": "Component",
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "from langflow.base.io.text import TextComponent\nfrom langflow.io import MultilineInput, Output\nfrom langflow.schema.message import Message\n\n\nclass TextInputComponent(TextComponent):\n    display_name = \"Text Input\"\n    description = \"Get text inputs from the Playground.\"\n    icon = \"type\"\n    name = \"TextInput\"\n\n    inputs = [\n        MultilineInput(\n            name=\"input_value\",\n            display_name=\"Text\",\n            info=\"Text to be passed as input.\",\n        ),\n    ]\n    outputs = [\n        Output(display_name=\"Text\", name=\"text\", method=\"text_response\"),\n    ]\n\n    def text_response(self) -> Message:\n        return Message(\n            text=self.input_value,\n        )\n",
+                "fileTypes": [],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": true,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "input_value": {
+                "tool_mode": false,
+                "trace_as_input": true,
+                "multiline": true,
+                "trace_as_metadata": true,
+                "load_from_db": false,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "input_value",
+                "value": "(myenv) fareed-sayed@fareed-sayed-VivoBook-ASUSLaptop-M1603QA-M1603QA:~/Documents/Literacy/models/scrapping$ python youtube_scrapping.py \n[\n    {\n        \"video_id\": \"3Jg9fVKcsew\",\n        \"title\": \"How to do Legal Research | Law Research\",\n        \"description\": \"For ease of your preparation, I have launched a few courses that are available on my website: https://www.lawdigest.in/ law digest ...\",\n        \"channel\": \"Law Digest by Ayushi\",\n        \"channel_id\": \"UCpAYS6qtw9XEjUcnOGR3Wkw\",\n        \"published_at\": \"2022-12-04T14:30:10Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/3Jg9fVKcsew/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/3Jg9fVKcsew/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/3Jg9fVKcsew/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=3Jg9fVKcsew\",\n        \"embed_url\": \"https://www.youtube.com/embed/3Jg9fVKcsew\"\n    },\n    {\n        \"video_id\": \"fyrQ4C59eyg\",\n        \"title\": \"Legal Research and Legal Drafting in One month with TOA\",\n        \"description\": \"For more queries or joining msg us here: https://wa.me/+919998826259.\",\n        \"channel\": \"Theory of Abrogation\",\n        \"channel_id\": \"UCbvWgv55ElrNlzp7cDQ47_A\",\n        \"published_at\": \"2024-05-24T20:50:34Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/fyrQ4C59eyg/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/fyrQ4C59eyg/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/fyrQ4C59eyg/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=fyrQ4C59eyg\",\n        \"embed_url\": \"https://www.youtube.com/embed/fyrQ4C59eyg\"\n    },\n    {\n        \"video_id\": \"lrwgc-Cbd5E\",\n        \"title\": \"How to Read a Case Citation\",\n        \"description\": \"In this video, we will understand how to read a judgment or a legal case citation. I hope you find this video useful, Leave us a ...\",\n        \"channel\": \"Priya Jain\",\n        \"channel_id\": \"UCItJsxqZNWUyxFn-A2tzizQ\",\n        \"published_at\": \"2021-05-15T10:40:15Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/lrwgc-Cbd5E/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/lrwgc-Cbd5E/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/lrwgc-Cbd5E/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=lrwgc-Cbd5E\",\n        \"embed_url\": \"https://www.youtube.com/embed/lrwgc-Cbd5E\"\n    },\n    {\n        \"video_id\": \"0ZXKmIXJ7lk\",\n        \"title\": \"Legal Writing Basics: Three Key Skills Sample\",\n        \"description\": \"This video introduces you to the \\\"Golden Rule\\\" of Legal Writing, to help the reader get the content quickly and easily. Our Three ...\",\n        \"channel\": \"Synergetics Education\",\n        \"channel_id\": \"UCMHzuVaK5_8A2w7DGjBixmg\",\n        \"published_at\": \"2019-12-01T20:13:50Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/0ZXKmIXJ7lk/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/0ZXKmIXJ7lk/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/0ZXKmIXJ7lk/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=0ZXKmIXJ7lk\",\n        \"embed_url\": \"https://www.youtube.com/embed/0ZXKmIXJ7lk\"\n    },\n    {\n        \"video_id\": \"lYipQzef8N8\",\n        \"title\": \"How to read extremely long judgments faster!\",\n        \"description\": \"I am a Delhi based lawyer. You can send me your stories at amish.aggarwala@gmail.com https://wa.me/+919958177114 I post ...\",\n        \"channel\": \"Law Chambers of Amish Aggarwala\",\n        \"channel_id\": \"UC_39GbojQPbzFX5xqB0Gu2g\",\n        \"published_at\": \"2023-05-16T06:03:24Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/lYipQzef8N8/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/lYipQzef8N8/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/lYipQzef8N8/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=lYipQzef8N8\",\n        \"embed_url\": \"https://www.youtube.com/embed/lYipQzef8N8\"\n    },\n    {\n        \"video_id\": \"Y66vN4ia_OY\",\n        \"title\": \"Searching Case Laws: How to Research Case Laws : Legal Research Tips :: Online Legal Research\",\n        \"description\": \"Searching for case laws as a lawyer or a law student can be a pain if you are not aware of the right tricks for researching a case ...\",\n        \"channel\": \"Law Giri\",\n        \"channel_id\": \"UCEHVfgn7f4gP0oa0O1WKq8g\",\n        \"published_at\": \"2020-06-21T12:15:50Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/Y66vN4ia_OY/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/Y66vN4ia_OY/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/Y66vN4ia_OY/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=Y66vN4ia_OY\",\n        \"embed_url\": \"https://www.youtube.com/embed/Y66vN4ia_OY\"\n    },\n    {\n        \"video_id\": \"CUQru8ILd98\",\n        \"title\": \"How to Find Case-Laws: A Guide for Young Advocates\",\n        \"description\": \"Are you a young advocate struggling to find relevant case-laws for your legal research? Look no further! In this video, Adv.\",\n        \"channel\": \"Legal Inspiration\",\n        \"channel_id\": \"UCTurO4neny9FOHspWmmj3HA\",\n        \"published_at\": \"2023-03-13T17:34:45Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/CUQru8ILd98/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/CUQru8ILd98/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/CUQru8ILd98/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=CUQru8ILd98\",\n        \"embed_url\": \"https://www.youtube.com/embed/CUQru8ILd98\"\n    },\n    {\n        \"video_id\": \"YnbpGTusaEc\",\n        \"title\": \"How to read a case file within 5 minutes: For young litigation lawyers\",\n        \"description\": \"There have been a lot of occasions when as a junior counsel I was told to rush to court and argue a matter at very short notice.\",\n        \"channel\": \"Law Chambers of Amish Aggarwala\",\n        \"channel_id\": \"UC_39GbojQPbzFX5xqB0Gu2g\",\n        \"published_at\": \"2020-06-25T16:59:00Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/YnbpGTusaEc/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/YnbpGTusaEc/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/YnbpGTusaEc/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=YnbpGTusaEc\",\n        \"embed_url\": \"https://www.youtube.com/embed/YnbpGTusaEc\"\n    },\n    {\n        \"video_id\": \"QZ1CXLeZYk8\",\n        \"title\": \"Cows, Science, and the Law\",\n        \"description\": \"This webinar analyzes the intersection of cows, science and the law. Speakers: Greg Berns, Emory University Laura Fox, Yale ...\",\n        \"channel\": \"GW Animal Law Program\",\n        \"channel_id\": \"UCQteLUWSH0nfjWTWdNCdoTg\",\n        \"published_at\": \"2025-02-07T19:36:54Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/QZ1CXLeZYk8/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/QZ1CXLeZYk8/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/QZ1CXLeZYk8/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=QZ1CXLeZYk8\",\n        \"embed_url\": \"https://www.youtube.com/embed/QZ1CXLeZYk8\"\n    },\n    {\n        \"video_id\": \"NHykzrRkpxE\",\n        \"title\": \"Learning Legal Drafting- Easy Ways to become best lawyer\",\n        \"description\": \"Legal drafting for young lawyers is always a problem. They don't know how to be good at drafting but you know what legal drafting ...\",\n        \"channel\": \"Law Giri\",\n        \"channel_id\": \"UCEHVfgn7f4gP0oa0O1WKq8g\",\n        \"published_at\": \"2020-04-09T08:15:52Z\",\n        \"thumbnails\": {\n            \"default\": {\n                \"url\": \"https://i.ytimg.com/vi/NHykzrRkpxE/default.jpg\",\n                \"width\": 120,\n                \"height\": 90\n            },\n            \"medium\": {\n                \"url\": \"https://i.ytimg.com/vi/NHykzrRkpxE/mqdefault.jpg\",\n                \"width\": 320,\n                \"height\": 180\n            },\n            \"high\": {\n                \"url\": \"https://i.ytimg.com/vi/NHykzrRkpxE/hqdefault.jpg\",\n                \"width\": 480,\n                \"height\": 360\n            }\n        },\n        \"url\": \"https://www.youtube.com/watch?v=NHykzrRkpxE\",\n        \"embed_url\": \"https://www.youtube.com/embed/NHykzrRkpxE\"\n    }\n]\n",
+                "display_name": "Text",
+                "advanced": false,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "Text to be passed as input.",
+                "title_case": false,
+                "type": "str",
+                "_input_type": "MultilineInput"
+              }
+            },
+            "description": "Get text inputs from the Playground.",
+            "icon": "type",
+            "base_classes": [
+              "Message"
+            ],
+            "display_name": "Data",
+            "documentation": "",
+            "custom_fields": {},
+            "output_types": [],
+            "pinned": false,
+            "conditional_paths": [],
+            "frozen": false,
+            "outputs": [
+              {
+                "types": [
+                  "Message"
+                ],
+                "selected": "Message",
+                "name": "text",
+                "display_name": "Text",
+                "method": "text_response",
+                "value": "__UNDEFINED__",
+                "cache": true
+              }
+            ],
+            "field_order": [
+              "input_value"
+            ],
+            "beta": false,
+            "legacy": false,
+            "edited": false,
+            "metadata": {},
+            "tool_mode": false,
+            "lf_version": "1.1.1"
+          },
+          "showNode": true,
+          "type": "TextInput",
+          "id": "TextInput-DdJSI"
+        },
+        "selected": false,
+        "width": 320,
+        "height": 233,
+        "dragging": false
+      },
+      {
+        "id": "TextInput-QPGcB",
+        "type": "genericNode",
+        "position": {
+          "x": 20,
+          "y": 300.1750253807107
+        },
+        "data": {
+          "node": {
+            "template": {
+              "_type": "Component",
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "from langflow.base.io.text import TextComponent\nfrom langflow.io import MultilineInput, Output\nfrom langflow.schema.message import Message\n\n\nclass TextInputComponent(TextComponent):\n    display_name = \"Text Input\"\n    description = \"Get text inputs from the Playground.\"\n    icon = \"type\"\n    name = \"TextInput\"\n\n    inputs = [\n        MultilineInput(\n            name=\"input_value\",\n            display_name=\"Text\",\n            info=\"Text to be passed as input.\",\n        ),\n    ]\n    outputs = [\n        Output(display_name=\"Text\", name=\"text\", method=\"text_response\"),\n    ]\n\n    def text_response(self) -> Message:\n        return Message(\n            text=self.input_value,\n        )\n",
+                "fileTypes": [],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": true,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "input_value": {
+                "tool_mode": false,
+                "trace_as_input": true,
+                "multiline": true,
+                "trace_as_metadata": true,
+                "load_from_db": false,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "input_value",
+                "value": "Legal Research and Analysis",
+                "display_name": "Text",
+                "advanced": false,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "Text to be passed as input.",
+                "title_case": false,
+                "type": "str",
+                "_input_type": "MultilineInput"
+              }
+            },
+            "description": "Get text inputs from the Playground.",
+            "icon": "type",
+            "base_classes": [
+              "Message"
+            ],
+            "display_name": "Main Topic",
+            "documentation": "",
+            "custom_fields": {},
+            "output_types": [],
+            "pinned": false,
+            "conditional_paths": [],
+            "frozen": false,
+            "outputs": [
+              {
+                "types": [
+                  "Message"
+                ],
+                "selected": "Message",
+                "name": "text",
+                "display_name": "Text",
+                "method": "text_response",
+                "value": "__UNDEFINED__",
+                "cache": true
+              }
+            ],
+            "field_order": [
+              "input_value"
+            ],
+            "beta": false,
+            "legacy": false,
+            "edited": false,
+            "metadata": {},
+            "tool_mode": false,
+            "lf_version": "1.1.1"
+          },
+          "showNode": true,
+          "type": "TextInput",
+          "id": "TextInput-QPGcB"
+        },
+        "selected": false,
+        "width": 320,
+        "height": 233,
+        "dragging": false
+      },
+      {
+        "id": "TextInput-1cIAI",
+        "type": "genericNode",
+        "position": {
+          "x": 33.00710659898475,
+          "y": 619.2243654822335
+        },
+        "data": {
+          "node": {
+            "template": {
+              "_type": "Component",
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "from langflow.base.io.text import TextComponent\nfrom langflow.io import MultilineInput, Output\nfrom langflow.schema.message import Message\n\n\nclass TextInputComponent(TextComponent):\n    display_name = \"Text Input\"\n    description = \"Get text inputs from the Playground.\"\n    icon = \"type\"\n    name = \"TextInput\"\n\n    inputs = [\n        MultilineInput(\n            name=\"input_value\",\n            display_name=\"Text\",\n            info=\"Text to be passed as input.\",\n        ),\n    ]\n    outputs = [\n        Output(display_name=\"Text\", name=\"text\", method=\"text_response\"),\n    ]\n\n    def text_response(self) -> Message:\n        return Message(\n            text=self.input_value,\n        )\n",
+                "fileTypes": [],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": true,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "input_value": {
+                "tool_mode": false,
+                "trace_as_input": true,
+                "multiline": true,
+                "trace_as_metadata": true,
+                "load_from_db": false,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "input_value",
+                "value": "drafting in law",
+                "display_name": "Text",
+                "advanced": false,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "Text to be passed as input.",
+                "title_case": false,
+                "type": "str",
+                "_input_type": "MultilineInput"
+              }
+            },
+            "description": "Get text inputs from the Playground.",
+            "icon": "type",
+            "base_classes": [
+              "Message"
+            ],
+            "display_name": "Sub_Topic",
+            "documentation": "",
+            "custom_fields": {},
+            "output_types": [],
+            "pinned": false,
+            "conditional_paths": [],
+            "frozen": false,
+            "outputs": [
+              {
+                "types": [
+                  "Message"
+                ],
+                "selected": "Message",
+                "name": "text",
+                "display_name": "Text",
+                "method": "text_response",
+                "value": "__UNDEFINED__",
+                "cache": true
+              }
+            ],
+            "field_order": [
+              "input_value"
+            ],
+            "beta": false,
+            "legacy": false,
+            "edited": false,
+            "metadata": {},
+            "tool_mode": false,
+            "lf_version": "1.1.1"
+          },
+          "showNode": true,
+          "type": "TextInput",
+          "id": "TextInput-1cIAI"
+        },
+        "selected": false,
+        "width": 320,
+        "height": 233,
+        "dragging": false
+      },
+      {
+        "id": "JSONCleaner-09OFa",
+        "type": "genericNode",
+        "position": {
+          "x": 1327.9155329949238,
+          "y": 491.293807106599
+        },
+        "data": {
+          "node": {
+            "template": {
+              "_type": "Component",
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "import json\nimport re\nimport unicodedata\n\nfrom langflow.custom import Component\nfrom langflow.inputs import BoolInput, MessageTextInput\nfrom langflow.schema.message import Message\nfrom langflow.template import Output\n\n\nclass JSONCleaner(Component):\n    icon = \"braces\"\n    display_name = \"JSON Cleaner\"\n    description = (\n        \"Cleans the messy and sometimes incorrect JSON strings produced by LLMs \"\n        \"so that they are fully compliant with the JSON spec.\"\n    )\n\n    inputs = [\n        MessageTextInput(\n            name=\"json_str\", display_name=\"JSON String\", info=\"The JSON string to be cleaned.\", required=True\n        ),\n        BoolInput(\n            name=\"remove_control_chars\",\n            display_name=\"Remove Control Characters\",\n            info=\"Remove control characters from the JSON string.\",\n            required=False,\n        ),\n        BoolInput(\n            name=\"normalize_unicode\",\n            display_name=\"Normalize Unicode\",\n            info=\"Normalize Unicode characters in the JSON string.\",\n            required=False,\n        ),\n        BoolInput(\n            name=\"validate_json\",\n            display_name=\"Validate JSON\",\n            info=\"Validate the JSON string to ensure it is well-formed.\",\n            required=False,\n        ),\n    ]\n\n    outputs = [\n        Output(display_name=\"Cleaned JSON String\", name=\"output\", method=\"clean_json\"),\n    ]\n\n    def clean_json(self) -> Message:\n        try:\n            from json_repair import repair_json\n        except ImportError as e:\n            msg = \"Could not import the json_repair package. Please install it with `pip install json_repair`.\"\n            raise ImportError(msg) from e\n\n        \"\"\"Clean the input JSON string based on provided options and return the cleaned JSON string.\"\"\"\n        json_str = self.json_str\n        remove_control_chars = self.remove_control_chars\n        normalize_unicode = self.normalize_unicode\n        validate_json = self.validate_json\n\n        start = json_str.find(\"{\")\n        end = json_str.rfind(\"}\")\n        if start == -1 or end == -1:\n            msg = \"Invalid JSON string: Missing '{' or '}'\"\n            raise ValueError(msg)\n        try:\n            json_str = json_str[start : end + 1]\n\n            if remove_control_chars:\n                json_str = self._remove_control_characters(json_str)\n            if normalize_unicode:\n                json_str = self._normalize_unicode(json_str)\n            if validate_json:\n                json_str = self._validate_json(json_str)\n\n            cleaned_json_str = repair_json(json_str)\n            result = str(cleaned_json_str)\n\n            self.status = result\n            return Message(text=result)\n        except Exception as e:\n            msg = f\"Error cleaning JSON string: {e}\"\n            raise ValueError(msg) from e\n\n    def _remove_control_characters(self, s: str) -> str:\n        \"\"\"Remove control characters from the string.\"\"\"\n        return re.sub(r\"[\\x00-\\x1F\\x7F]\", \"\", s)\n\n    def _normalize_unicode(self, s: str) -> str:\n        \"\"\"Normalize Unicode characters in the string.\"\"\"\n        return unicodedata.normalize(\"NFC\", s)\n\n    def _validate_json(self, s: str) -> str:\n        \"\"\"Validate the JSON string.\"\"\"\n        try:\n            json.loads(s)\n        except json.JSONDecodeError as e:\n            msg = f\"Invalid JSON string: {e}\"\n            raise ValueError(msg) from e\n        return s\n",
+                "fileTypes": [],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": true,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "json_str": {
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "load_from_db": false,
+                "list": false,
+                "required": true,
+                "placeholder": "",
+                "show": true,
+                "name": "json_str",
+                "value": "",
+                "display_name": "JSON String",
+                "advanced": false,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "The JSON string to be cleaned.",
+                "title_case": false,
+                "type": "str",
+                "_input_type": "MessageTextInput"
+              },
+              "normalize_unicode": {
+                "trace_as_metadata": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "normalize_unicode",
+                "value": false,
+                "display_name": "Normalize Unicode",
+                "advanced": false,
+                "dynamic": false,
+                "info": "Normalize Unicode characters in the JSON string.",
+                "title_case": false,
+                "type": "bool",
+                "_input_type": "BoolInput"
+              },
+              "remove_control_chars": {
+                "trace_as_metadata": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "remove_control_chars",
+                "value": false,
+                "display_name": "Remove Control Characters",
+                "advanced": false,
+                "dynamic": false,
+                "info": "Remove control characters from the JSON string.",
+                "title_case": false,
+                "type": "bool",
+                "_input_type": "BoolInput"
+              },
+              "validate_json": {
+                "trace_as_metadata": true,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "validate_json",
+                "value": false,
+                "display_name": "Validate JSON",
+                "advanced": false,
+                "dynamic": false,
+                "info": "Validate the JSON string to ensure it is well-formed.",
+                "title_case": false,
+                "type": "bool",
+                "_input_type": "BoolInput"
+              }
+            },
+            "description": "Cleans the messy and sometimes incorrect JSON strings produced by LLMs so that they are fully compliant with the JSON spec.",
+            "icon": "braces",
+            "base_classes": [
+              "Message"
+            ],
+            "display_name": "JSON Cleaner",
+            "documentation": "",
+            "custom_fields": {},
+            "output_types": [],
+            "pinned": false,
+            "conditional_paths": [],
+            "frozen": false,
+            "outputs": [
+              {
+                "types": [
+                  "Message"
+                ],
+                "selected": "Message",
+                "name": "output",
+                "display_name": "Cleaned JSON String",
+                "method": "clean_json",
+                "value": "__UNDEFINED__",
+                "cache": true
+              }
+            ],
+            "field_order": [
+              "json_str",
+              "remove_control_chars",
+              "normalize_unicode",
+              "validate_json"
+            ],
+            "beta": false,
+            "legacy": false,
+            "edited": false,
+            "metadata": {},
+            "tool_mode": false,
+            "lf_version": "1.1.1"
+          },
+          "showNode": true,
+          "type": "JSONCleaner",
+          "id": "JSONCleaner-09OFa"
+        },
+        "selected": false,
+        "width": 320,
+        "height": 405
+      },
+      {
+        "id": "TextOutput-HkgeY",
+        "type": "genericNode",
+        "position": {
+          "x": 1757.1622145115082,
+          "y": 394.61005474791176
+        },
+        "data": {
+          "node": {
+            "template": {
+              "_type": "Component",
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "from langflow.base.io.text import TextComponent\nfrom langflow.io import MultilineInput, Output\nfrom langflow.schema.message import Message\n\n\nclass TextOutputComponent(TextComponent):\n    display_name = \"Text Output\"\n    description = \"Display a text output in the Playground.\"\n    icon = \"type\"\n    name = \"TextOutput\"\n\n    inputs = [\n        MultilineInput(\n            name=\"input_value\",\n            display_name=\"Text\",\n            info=\"Text to be passed as output.\",\n        ),\n    ]\n    outputs = [\n        Output(display_name=\"Text\", name=\"text\", method=\"text_response\"),\n    ]\n\n    def text_response(self) -> Message:\n        message = Message(\n            text=self.input_value,\n        )\n        self.status = self.input_value\n        return message\n",
+                "fileTypes": [],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": true,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "input_value": {
+                "tool_mode": false,
+                "trace_as_input": true,
+                "multiline": true,
+                "trace_as_metadata": true,
+                "load_from_db": false,
+                "list": false,
+                "required": false,
+                "placeholder": "",
+                "show": true,
+                "name": "input_value",
+                "value": "",
+                "display_name": "Text",
+                "advanced": false,
+                "input_types": [
+                  "Message"
+                ],
+                "dynamic": false,
+                "info": "Text to be passed as output.",
+                "title_case": false,
+                "type": "str",
+                "_input_type": "MultilineInput"
+              }
+            },
+            "description": "Display a text output in the Playground.",
+            "icon": "type",
+            "base_classes": [
+              "Message"
+            ],
+            "display_name": "Text Output",
+            "documentation": "",
+            "custom_fields": {},
+            "output_types": [],
+            "pinned": false,
+            "conditional_paths": [],
+            "frozen": false,
+            "outputs": [
+              {
+                "types": [
+                  "Message"
+                ],
+                "selected": "Message",
+                "name": "text",
+                "display_name": "Text",
+                "method": "text_response",
+                "value": "__UNDEFINED__",
+                "cache": true
+              }
+            ],
+            "field_order": [
+              "input_value"
+            ],
+            "beta": false,
+            "legacy": false,
+            "edited": false,
+            "metadata": {},
+            "tool_mode": false,
+            "lf_version": "1.1.1"
+          },
+          "showNode": true,
+          "type": "TextOutput",
+          "id": "TextOutput-HkgeY"
+        },
+        "selected": true,
+        "width": 320,
+        "height": 233,
+        "dragging": false,
+        "positionAbsolute": {
+          "x": 1757.1622145115082,
+          "y": 394.61005474791176
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "JSONCleaner-09OFa",
+        "target": "TextOutput-HkgeY",
+        "sourceHandle": "{œdataTypeœ:œJSONCleanerœ,œidœ:œJSONCleaner-09OFaœ,œnameœ:œoutputœ,œoutput_typesœ:[œMessageœ]}",
+        "targetHandle": "{œfieldNameœ:œinput_valueœ,œidœ:œTextOutput-HkgeYœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "id": "reactflow__edge-JSONCleaner-09OFa{œdataTypeœ:œJSONCleanerœ,œidœ:œJSONCleaner-09OFaœ,œnameœ:œoutputœ,œoutput_typesœ:[œMessageœ]}-TextOutput-HkgeY{œfieldNameœ:œinput_valueœ,œidœ:œTextOutput-HkgeYœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "data": {
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "TextOutput-HkgeY",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceHandle": {
+            "dataType": "JSONCleaner",
+            "id": "JSONCleaner-09OFa",
+            "name": "output",
+            "output_types": [
+              "Message"
+            ]
+          }
+        },
+        "selected": false,
+        "animated": false,
+        "className": "not-running"
+      },
+      {
+        "source": "TextInput-DdJSI",
+        "sourceHandle": "{œdataTypeœ:œTextInputœ,œidœ:œTextInput-DdJSIœ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "Prompt-nxIyu",
+        "targetHandle": "{œfieldNameœ:œdataœ,œidœ:œPrompt-nxIyuœ,œinputTypesœ:[œMessageœ,œTextœ],œtypeœ:œstrœ}",
+        "data": {
+          "targetHandle": {
+            "fieldName": "data",
+            "id": "Prompt-nxIyu",
+            "inputTypes": [
+              "Message",
+              "Text"
+            ],
+            "type": "str"
+          },
+          "sourceHandle": {
+            "dataType": "TextInput",
+            "id": "TextInput-DdJSI",
+            "name": "text",
+            "output_types": [
+              "Message"
+            ]
+          }
+        },
+        "id": "reactflow__edge-TextInput-DdJSI{œdataTypeœ:œTextInputœ,œidœ:œTextInput-DdJSIœ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}-Prompt-nxIyu{œfieldNameœ:œdataœ,œidœ:œPrompt-nxIyuœ,œinputTypesœ:[œMessageœ,œTextœ],œtypeœ:œstrœ}",
+        "animated": false,
+        "className": "ran"
+      },
+      {
+        "source": "TextInput-QPGcB",
+        "sourceHandle": "{œdataTypeœ:œTextInputœ,œidœ:œTextInput-QPGcBœ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "Prompt-nxIyu",
+        "targetHandle": "{œfieldNameœ:œmaintopicœ,œidœ:œPrompt-nxIyuœ,œinputTypesœ:[œMessageœ,œTextœ],œtypeœ:œstrœ}",
+        "data": {
+          "targetHandle": {
+            "fieldName": "maintopic",
+            "id": "Prompt-nxIyu",
+            "inputTypes": [
+              "Message",
+              "Text"
+            ],
+            "type": "str"
+          },
+          "sourceHandle": {
+            "dataType": "TextInput",
+            "id": "TextInput-QPGcB",
+            "name": "text",
+            "output_types": [
+              "Message"
+            ]
+          }
+        },
+        "id": "reactflow__edge-TextInput-QPGcB{œdataTypeœ:œTextInputœ,œidœ:œTextInput-QPGcBœ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}-Prompt-nxIyu{œfieldNameœ:œmaintopicœ,œidœ:œPrompt-nxIyuœ,œinputTypesœ:[œMessageœ,œTextœ],œtypeœ:œstrœ}",
+        "animated": false,
+        "className": "ran"
+      },
+      {
+        "source": "TextInput-1cIAI",
+        "sourceHandle": "{œdataTypeœ:œTextInputœ,œidœ:œTextInput-1cIAIœ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "Prompt-nxIyu",
+        "targetHandle": "{œfieldNameœ:œsubtopicœ,œidœ:œPrompt-nxIyuœ,œinputTypesœ:[œMessageœ,œTextœ],œtypeœ:œstrœ}",
+        "data": {
+          "targetHandle": {
+            "fieldName": "subtopic",
+            "id": "Prompt-nxIyu",
+            "inputTypes": [
+              "Message",
+              "Text"
+            ],
+            "type": "str"
+          },
+          "sourceHandle": {
+            "dataType": "TextInput",
+            "id": "TextInput-1cIAI",
+            "name": "text",
+            "output_types": [
+              "Message"
+            ]
+          }
+        },
+        "id": "reactflow__edge-TextInput-1cIAI{œdataTypeœ:œTextInputœ,œidœ:œTextInput-1cIAIœ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}-Prompt-nxIyu{œfieldNameœ:œsubtopicœ,œidœ:œPrompt-nxIyuœ,œinputTypesœ:[œMessageœ,œTextœ],œtypeœ:œstrœ}",
+        "animated": false,
+        "className": "ran"
+      },
+      {
+        "source": "Prompt-nxIyu",
+        "sourceHandle": "{œdataTypeœ:œPromptœ,œidœ:œPrompt-nxIyuœ,œnameœ:œpromptœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "GroqModel-F4G8v",
+        "targetHandle": "{œfieldNameœ:œsystem_messageœ,œidœ:œGroqModel-F4G8vœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "data": {
+          "targetHandle": {
+            "fieldName": "system_message",
+            "id": "GroqModel-F4G8v",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceHandle": {
+            "dataType": "Prompt",
+            "id": "Prompt-nxIyu",
+            "name": "prompt",
+            "output_types": [
+              "Message"
+            ]
+          }
+        },
+        "id": "reactflow__edge-Prompt-nxIyu{œdataTypeœ:œPromptœ,œidœ:œPrompt-nxIyuœ,œnameœ:œpromptœ,œoutput_typesœ:[œMessageœ]}-GroqModel-F4G8v{œfieldNameœ:œsystem_messageœ,œidœ:œGroqModel-F4G8vœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "animated": true,
+        "className": "running"
+      },
+      {
+        "source": "GroqModel-F4G8v",
+        "sourceHandle": "{œdataTypeœ:œGroqModelœ,œidœ:œGroqModel-F4G8vœ,œnameœ:œtext_outputœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "JSONCleaner-09OFa",
+        "targetHandle": "{œfieldNameœ:œjson_strœ,œidœ:œJSONCleaner-09OFaœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "data": {
+          "targetHandle": {
+            "fieldName": "json_str",
+            "id": "JSONCleaner-09OFa",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          },
+          "sourceHandle": {
+            "dataType": "GroqModel",
+            "id": "GroqModel-F4G8v",
+            "name": "text_output",
+            "output_types": [
+              "Message"
+            ]
+          }
+        },
+        "id": "reactflow__edge-GroqModel-F4G8v{œdataTypeœ:œGroqModelœ,œidœ:œGroqModel-F4G8vœ,œnameœ:œtext_outputœ,œoutput_typesœ:[œMessageœ]}-JSONCleaner-09OFa{œfieldNameœ:œjson_strœ,œidœ:œJSONCleaner-09OFaœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "animated": false,
+        "className": "not-running"
+      }
+    ],
+    "viewport": {
+      "x": -335.14397232089823,
+      "y": 41.057374334093765,
+      "zoom": 0.653471786537001
+    }
+  },
+  "description": "Navigate the Networks of Conversation.",
+  "name": "Filteration_youtube_videos",
+  "last_tested_version": "1.1.1",
+  "endpoint_name": null,
+  "is_component": false
+}

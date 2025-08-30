@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .resume-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 1;
+            width: 500px; /* Adjust size as needed */
+            height: auto;
+            object-fit: contain;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #f0f0f0;
+            padding-bottom: 30px;
+            position: relative;
+        }
+
+        .name {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            letter-spacing: 1px;
+        }
+
+        .title {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .contact-info {
+            color: #666;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+        }
+
+        .contact-item i {
+            width: 20px;
+            text-align: center;
+            color: #3498db;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #3498db;
+        }
+
+        .item {
+            margin-bottom: 25px;
+            padding-left: 20px;
+            border-left: 3px solid #e9ecef;
+            transition: border-left-color 0.3s;
+        }
+
+        .item:hover {
+            border-left-color: #3498db;
+        }
+
+        .item-title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .item-subtitle {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        .item-date {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill {
+            background: #f8f9fa;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s;
+        }
+
+        .skill:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .achievements-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .achievement-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .languages-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .language-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: #3498db;
+        }
+
+        ul {
+            list-style-position: inside;
+            margin-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .resume-container {
+                padding: 30px;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="resume-container">
+        <img src="../static/logo.png" alt="Company Logo" class="watermark">
+        <div class="content" id="resume">
+        </div>
+    </div>
+
+    <script>
+        // Resume Data
+        const resumeData = {
+            id: 1,
+            name: "fareed sayed",
+            email: "fareedsayedprsnl@gmail.com",
+            phone_number: "1111111111",
+            about: "hii my srlf fareed",
+            toolname: [
+                {
+                    id: 1,
+                    name: "Programming Languages",
+                    user: 1,
+                    tools: []
+                },
+                {
+                    id: 2,
+                    name: "Web Technologies",
+                    user: 1,
+                    tools: []
+                },
+                {
+                    id: 3,
+                    name: "Others",
+                    user: 1,
+                    tools: []
+                }
+            ],
+            education: [
+                {
+                    id: 1,
+                    user: 1,
+                    degree: "Bachelor of Technology",
+                    field_of_study: "Computer Science",
+                    University: "Mumbai University",
+                    location: "Mumbai, Maharashtra",
+                    start_date: "2020-08-01",
+                    end_date: "2024-05-30",
+                    current_grade: "A"
+                }
+            ],
+            certificate: [
+                {
+                    id: 12,
+                    name: "Python Bootcamp",
+                    competition_battled: 3,
+                    competition_won: 2,
+                    user: 1
+                },
+                {
+                    id: 13,
+                    name: "Flask Mastery Certificate",
+                    competition_battled: 10,
+                    competition_won: 5,
+                    user: 1
+                }
+            ],
+            project: [
+                {
+                    id: 1,
+                    user: 1,
+                    name: "AI Learning Platform",
+                    description: "A comprehensive learning platform with AI-powered features",
+                    link: [
+                        {
+                            id: 1,
+                            project: 1,
+                            url: "https://github.com/Fareed95/AI-Learning-Platform",
+                            name: "GitHub Repository"
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    user: 1,
+                    name: "Portfolio Website",
+                    description: "Personal portfolio website showcasing projects and skills",
+                    link: []
+                }
+            ]
+        };
+
+        // Render Functions
+        function renderHeader(data) {
+            return `
+                <div class="header">
+                    <div class="name">${data.name}</div>
+                    <div class="contact-info">
+                        <span class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            ${data.email}
+                        </span>
+                        <span class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            ${data.phone_number}
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAbout(about) {
+            return `
+                <div class="section">
+                    <div class="section-title">About</div>
+                    <p>${about}</p>
+                </div>
+            `;
+        }
+
+        function renderEducation(education) {
+            return education.map(edu => `
+                <div class="item">
+                    <div class="item-title">${edu.degree} in ${edu.field_of_study}</div>
+                    <div class="item-subtitle">${edu.University} - ${edu.location}</div>
+                    <div class="item-date">${formatDate(edu.start_date)} - ${formatDate(edu.end_date)}</div>
+                    <p>Grade: ${edu.current_grade}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderCertificates(certificates) {
+            return certificates.map(cert => `
+                <div class="item">
+                    <div class="item-title">${cert.name}</div>
+                    <p>Competitions: Won ${cert.competition_won} out of ${cert.competition_battled}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderProjects(projects) {
+            return projects.map(project => `
+                <div class="item">
+                    <div class="item-title">${project.name}</div>
+                    <p>${project.description}</p>
+                    ${project.link.map(link => `
+                        <a href="${link.url}" target="_blank" class="project-link">
+                            <i class="fab fa-github"></i> ${link.name}
+                        </a>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function renderTools(toolname) {
+            return toolname.map(category => `
+                <div class="section">
+                    <div class="section-title">${category.name}</div>
+                    <div class="skills-list">
+                        ${category.tools.map(tool => `
+                            <span class="skill">${tool}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+
+        // Render Resume
+        function renderResume(data) {
+            const resume = document.getElementById('resume');
+            resume.innerHTML = `
+                ${renderHeader(data)}
+                ${renderAbout(data.about)}
+                ${renderSection('Education', renderEducation(data.education))}
+                ${renderSection('Certifications', renderCertificates(data.certificate))}
+                ${renderSection('Projects', renderProjects(data.project))}
+                ${renderTools(data.toolname)}
+            `;
+        }
+
+        function renderSection(title, content) {
+            return `
+                <div class="section">
+                    <div class="section-title">${title}</div>
+                    ${content}
+                </div>
+            `;
+        }
+
+        // Initialize
+        renderResume(resumeData);
+    </script>
+</body>
+</html>

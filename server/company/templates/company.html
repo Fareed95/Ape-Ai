@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Internship Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: #007bff;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            font-size: 20px;
+        }
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">New Internship Application</div>
+        <div class="content">
+            <p>Dear Hiring Manager,</p>
+            <p>We are pleased to inform you that <strong>{{ name }}</strong> has successfully completed the required course and has applied for the <strong>{{ internship }}</strong> internship at your esteemed company.</p>
+            <p>Below are the applicant's details:</p>
+            <ul>
+                <li><strong>Course Title:</strong> {{ course }}</li>
+                <li><strong>Name:</strong> {{ name }}</li>
+                <li><strong>Email:</strong> {{ email }}</li>
+                <li><strong>Internship Title:</strong> {{ internship }}</li>
+                <li><strong>Portfolio:</strong> <a href="http://localhost:3000/portfolio/{{ email }}">Download</a></li>
+            </ul>
+            <p>We hope you will consider their application and connect with them for further discussions.</p>
+            <p>Best regards,<br>
+            CodeCell Team</p>
+        </div>
+        <div class="footer">This is an automated email. Please do not reply.</div>
+    </div>
+</body>
+</html>

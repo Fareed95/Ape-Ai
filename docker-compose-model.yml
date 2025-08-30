@@ -1,0 +1,10 @@
+services:
+  model:
+    build:
+      context: ./models
+      dockerfile: Dockerfile
+    container_name: model_api
+    volumes:
+      - ./models:/app
+    ports:
+      - "8001:8001"

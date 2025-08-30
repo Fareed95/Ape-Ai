@@ -1,0 +1,113 @@
+# next-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextjs-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nextjs-deployment
+  template:
+    metadata:
+      labels:
+        app: nextjs-deployment
+    spec:
+      containers:
+        - name: nextjs-deployment
+          image: fareed95/literacy-client:01
+          envFrom:
+            - configMapRef:
+                name: my-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextjs-service
+spec:
+  selector:
+    app: nextjs-deployment
+  ports:
+    - protocol: TCP
+      port: 3000  
+      targetPort: 3000
+  type: LoadBalancer
+
+---
+# django-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-deployment
+  namespace: default
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: django-deployment
+  template:
+    metadata:
+      labels:
+        app: django-deployment
+    spec:
+      containers:
+        - name: django-deployment
+          image: fareed95/literacy-server:02
+          envFrom:
+            - configMapRef:
+                name: my-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-service
+spec:
+  selector:
+    app: django-deployment
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: LoadBalancer
+
+---
+# flask-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-deployment
+  template:
+    metadata:
+      labels:
+        app: flask-deployment
+    spec:
+      containers:
+        - name: flask-deployment
+          image: fareed95/literacy-models:01
+          ports:
+            - containerPort: 8001
+          envFrom:
+            - configMapRef:
+                name: my-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+spec:
+  selector:
+    app: flask-deployment
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001
+  type: LoadBalancer

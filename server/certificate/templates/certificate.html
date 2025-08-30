@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #1A1A1A, #2D2D2D);
+            margin: 0;
+            padding: 20px;
+            color: #FFFFFF;
+        }
+
+        .certificate-container {
+            width: 1000px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 
+                20px 20px 40px #151515,
+                -20px -20px 40px #353535,
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            background: linear-gradient(45deg, #3D348B, #7B61FF);
+            opacity: 0.1;
+            filter: blur(40px);
+            z-index: -1;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            border-radius: 50%;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: -50px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        }
+
+        .logo {
+            width: 80px;
+            aspect-ratio: 1;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+        }
+
+        .certificate-header {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(45deg, #FFFFFF, #7B61FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .certificate-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin: 30px 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .certificate-body {
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 20px 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .certificate-body span {
+            color: #FFD700;
+            font-weight: 600;
+        }
+
+        .certificate-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .signature {
+            text-align: center;
+            width: 200px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.7);
+            background: linear-gradient(45deg, #f21616, #7B61FF);
+            
+        }
+        
+        .signature-image {
+            display: block;
+            max-width: 120px;
+            height: auto;
+            margin-left: 40px;
+            filter: brightness(150%) contrast(120%);
+        }
+        
+        .signature-line {
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .date, .issued-by {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Grid Pattern Overlay */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate-container">
+        <div class="geometric-shape shape-1"></div>
+        <div class="geometric-shape shape-2"></div>
+        <div class="grid-overlay"></div>
+        
+        <img src="../static/logo.png" class="logo" alt="Literacy Team Logo">
+        
+        <p class="certificate-header">Certificate of Achievement</p>
+        <h1 class="certificate-title">This is to certify that</h1>
+        
+        <p class="certificate-body">
+            <span>{{ name }}</span> has successfully completed the <span>{{ name_of_certificate }}</span> 
+            program from <span>Literacy Team</span>.
+        </p>
+        
+        <p class="certificate-body">
+           It is very glad to announce that <span>{{ name }}</span> has
+            battled in <span>{{ competition_battled }}</span> competitions, and won <span>{{ competition_won }}</span> compevertitions.
+        </p>
+
+        <div class="certificate-footer">
+            
+            <div class="signature">
+                <img src="../static/authorizedSign.png" alt="Authorized Signature" class="signature-image">
+                <div class="signature-line">
+                    Authorized Signature
+                </div>
+            </div>
+            <div class="issued-by">Issued by: <span>Literacy Team</span></div>
+        </div>
+    </div>
+</body>
+</html>

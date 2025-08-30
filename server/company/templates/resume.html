@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume</title>
+</head>
+<body>
+    <h1>{{ name }}</h1>
+    <p>Email: {{ email }}</p>
+    <p>Phone: {{ phone }}</p>
+    <h2>Education</h2>
+    <ul>
+        {% for edu in education %}
+        <li>Degree: {{ edu.degree }}</li>
+        <li>Field of Study: {{ edu.field_of_study }}</li>
+        <li>University: {{ edu.University }}</li>
+        <li>Location: {{ edu.location }}</li>
+        <li>Start Date: {{ edu.start_date }}</li>
+        <li>End Date: {{ edu.end_date }}</li>
+        <li>Current Grade: {{ edu.current_grade }}</li>
+        <br>
+        {% endfor %}
+    </ul>
+    <h2>Projects</h2>
+    <ul>
+        {% for project in projects %}
+        <li>
+            <strong>{{ project.name }}</strong><br>
+            {{ project.description }}
+        </li>
+        {% endfor %}
+    </ul>
+    <h2>Tools</h2>
+    <ul>
+        {% for tool in toolname %}
+        <li><strong>{{ tool.name }}</strong>
+            <ul>
+                {% for component in tool.tools %}
+                <li>{{ component.name }}
+                    <ul>
+                        {% for subcomponent in component.toolcomponents %}
+                        <li>{{ subcomponent.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

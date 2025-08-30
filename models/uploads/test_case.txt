@@ -1,0 +1,5 @@
+def is_armstrong_number(n: int) -> bool:
+    num_str = str(n)
+    power = len(num_str)
+    armstrong_sum = sum(int(digit) ** power for digit in num_str)
+    return armstrong_sum == n

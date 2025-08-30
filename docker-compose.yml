@@ -1,0 +1,47 @@
+services:
+  model:
+    build:
+      context: ./models
+      dockerfile: Dockerfile
+    container_name: model_api
+    volumes:
+      - ./models:/app
+    ports:
+      - "8001:8001"
+    networks:
+      - templet
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: server_api
+    volumes:
+      - ./server:/app
+    ports:
+      - "8000:8000"
+    networks:
+      - templet
+    depends_on:
+      - model
+
+  chat_bots:
+    build:
+      context: ./Chat_bots
+      dockerfile: Dockerfile
+    container_name: chat_bots
+    volumes:
+    - ./Chat_bots:/app
+    ports:
+    - "8010:8010"
+    networks :
+    - templet
+    depends_on :
+    - server
+
+
+
+
+networks:
+  templet:
+    driver: bridge
