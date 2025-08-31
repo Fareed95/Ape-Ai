@@ -58,6 +58,9 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
     'x-auth-app',
 ]
+
+# Disable automatic slash appending to prevent URL conflicts
+APPEND_SLASH = False
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
