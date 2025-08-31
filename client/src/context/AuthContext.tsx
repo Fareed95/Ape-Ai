@@ -52,6 +52,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const userData = await authService.getUserData(storedToken);
             setUser(userData);
             localStorage.setItem('auth_user', JSON.stringify(userData));
+            
+            // Navigate to appropriate dashboard if on landing page
+            if (window.location.pathname === '/') {
+              navigateBasedOnUserType(userData);
+            }
           } catch (error: any) {
             console.log('Token validation failed:', error.message);
             // Token is invalid, clear storage
