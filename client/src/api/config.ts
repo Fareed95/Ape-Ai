@@ -30,7 +30,8 @@ export const getApiUrl = (endpoint: string): string => {
 export const getAuthHeaders = (token?: string) => {
   const headers: Record<string, string> = { ...API_CONFIG.HEADERS };
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    // Server expects token without Bearer prefix
+    headers['Authorization'] = token;
   }
   return headers;
 };

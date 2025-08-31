@@ -148,6 +148,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Navigate based on user type
         navigateBasedOnUserType(userData);
+      } else {
+        throw new Error('No JWT token received from server');
       }
     } catch (error: any) {
       console.error('Login error:', error);

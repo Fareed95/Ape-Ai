@@ -54,32 +54,17 @@ class AuthService {
   // Register user
   async register(data: RegisterData): Promise<AuthResponse> {
     try {
-      const url = getApiUrl(API_CONFIG.ENDPOINTS.REGISTER);
-      console.log('=== REGISTRATION DEBUG ===');
-      console.log('URL:', url);
-      console.log('Headers:', API_CONFIG.HEADERS);
-      console.log('Data:', data);
-      console.log('Environment check:');
-      console.log('- NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
-      console.log('- NEXT_PUBLIC_FRONTEND_SECRET_KEY:', process.env.NEXT_PUBLIC_FRONTEND_SECRET_KEY);
-      console.log('========================');
-      
-      const response = await fetch(url, {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.REGISTER), {
         method: 'POST',
         headers: API_CONFIG.HEADERS,
         body: JSON.stringify(data),
       });
-
-      console.log('Response status:', response.status);
-      console.log('Response statusText:', response.statusText);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (!response.ok) {
         let errorMessage = 'Registration failed';
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorData.error || errorMessage;
-          console.log('Error response data:', errorData);
         } catch (parseError) {
           console.error('Failed to parse error response:', parseError);
           errorMessage = `HTTP ${response.status}: ${response.statusText}`;
@@ -88,12 +73,9 @@ class AuthService {
       }
 
       const result = await response.json();
-      console.log('Registration success:', result);
       return result;
     } catch (error: any) {
       console.error('Registration fetch error:', error);
-      console.error('Error type:', error?.constructor?.name);
-      console.error('Error message:', error?.message);
       
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error('Network error: Unable to connect to the server. Please check your internet connection.');
