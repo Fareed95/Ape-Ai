@@ -3,7 +3,7 @@ services:
     build:
       context: ./models
       dockerfile: Dockerfile
-    container_name: model_api
+    container_name: model_ape_api
     volumes:
       - ./models:/app
     ports:
@@ -15,7 +15,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    container_name: server_api
+    container_name: server_ape_api
     volumes:
       - ./server:/app
     ports:
@@ -29,7 +29,7 @@ services:
     build:
       context: ./Chat_bots
       dockerfile: Dockerfile
-    container_name: chat_bots
+    container_name: chat_bots_ape_api
     volumes:
     - ./Chat_bots:/app
     ports:
@@ -38,9 +38,6 @@ services:
     - templet
     depends_on :
     - server
-
-
-
 
 networks:
   templet:

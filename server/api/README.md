@@ -241,7 +241,7 @@ Authorization: (jwt token)
 
 
 * **Endpoint:** `DELETE /api/authentication/user`
-* **Purpose:** Update the name of the user
+* **Purpose:** Delete the user from the application database
 * **Headers:** 
 ```json
 x-auth-app: (FRONTEND_SECRET_KEY)

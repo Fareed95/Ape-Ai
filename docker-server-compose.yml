@@ -3,7 +3,7 @@ services :
     build:
       context: ./server
       dockerfile: Dockerfile
-    container_name: server_api
+    container_name: server_ape_api
     volumes:
       - ./server:/app
     ports:
