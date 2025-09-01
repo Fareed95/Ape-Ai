@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react';
 import { apeService } from '@/api/userProfileService';
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { useRouter } from 'next/navigation';
+import { IMAGES } from '@/constants/image';
 // import { saveAs } from 'file-saver';
 
 const HeroBackground = () => (
@@ -321,8 +322,8 @@ const UserInfoPage = () => {
                     items={[{
                       id: 1,
                       name: user?.name || "User",
-                      designation: "Member",
-                      image: user?.profile_image || "/default-avatar.png",
+                      designation: "Student",
+                      image: user?.profile_image || IMAGES.DEFAULT_AVATAR,
                     }]}
                   />
                 </div>
@@ -360,7 +361,7 @@ const UserInfoPage = () => {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => router.push(`/portfolio/${user?.email}`)}
+                onClick={() => router.push(`/Portfolio/${user?.email}`)}
                 className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-500 hover:to-teal-500 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-lg shadow-blue-600/25 border border-blue-500/20 font-sans flex items-center justify-center gap-2"
               >
                 <ExternalLink className="w-4 h-4" />

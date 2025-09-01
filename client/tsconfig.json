@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(routes)/layout.jsx", "src/components/ui/navbar-menu.jsx", "src/components/dashboard/mentor/SessionCalendar.jsx", "src/components/dashboard/mentor/ResourceCenter.jsx", "src/components/dashboard/mentor/PerformanceMetrics.jsx", "src/components/dashboard/mentor/MentorAnalytics.jsx", "src/components/dashboard/mentor/MenteeList.jsx", "src/app/(routes)/mentor/dashboard/page.jsx", "src/app/(routes)/organization/dashboard/page.jsx", "src/app/(routes)/OrganizationLogin/page.jsx", "src/app/(routes)/About/page.jsx", "src/components/ui/glowing-effect.jsx", "src/app/(routes)/CompanyProfile"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(routes)/layout.jsx", "src/components/ui/navbar-menu.jsx", "src/components/dashboard/mentor/SessionCalendar.jsx", "src/components/dashboard/mentor/ResourceCenter.jsx", "src/components/dashboard/mentor/PerformanceMetrics.jsx", "src/components/dashboard/mentor/MentorAnalytics.jsx", "src/components/dashboard/mentor/MenteeList.jsx", "src/app/(routes)/mentor/dashboard/page.jsx", "src/app/(routes)/organization/dashboard/page.jsx", "src/app/(routes)/OrganizationLogin/page.jsx", "src/app/(routes)/About/page.jsx", "src/components/ui/glowing-effect.jsx", "src/app/(routes)/CompanyProfile", "src/hooks/usePortfolio.js"],
   "exclude": ["node_modules"]
 }

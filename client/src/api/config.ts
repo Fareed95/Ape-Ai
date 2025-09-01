@@ -16,6 +16,18 @@ export const API_CONFIG = {
     USER_DATA: '/api/authentication/user',
   },
 
+  // Portfolio endpoints
+  PORTFOLIO: {
+    USER_DETAILS: (email: string) => `/api/userdetails/${email}/`,
+    TOOL_NAMES: '/api/toolnames/',
+    TOOLS: '/api/tools/',
+    TOOL_COMPONENTS: '/api/toolcomponents/',
+    EDUCATION: '/api/education/',
+    CERTIFICATES: '/api/certificates/',
+    PROJECTS: '/api/projects/',
+    LINKS: '/api/links/',
+  },
+
   COMMUNITY: {
     LIST: '/api/community/communities/',
     DETAIL: (id: number | string) => `/api/community/communities/${id}/`,
