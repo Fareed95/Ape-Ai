@@ -85,7 +85,76 @@ export const apeService = {
     }
     return response.json();
   },
+
+  // Get company internships and applications
+  async getCompanyInternships(token: string, companyId: number) {
+    const response = await fetch(`${API_CONFIG.APE_API_SERVER}/api/companies/${companyId}/internships/`, {
+      method: 'GET',
+      headers: getAuthHeaders(token),
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to get company internships. Status: ${response.status}`);
+    }
+    return response.json();
+  },
+
+  // Get company analytics data
+  async getCompanyAnalytics(token: string, companyId: number) {
+    const response = await fetch(`${API_CONFIG.APE_API_SERVER}/api/companies/${companyId}/analytics/`, {
+      method: 'GET',
+      headers: getAuthHeaders(token),
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to get company analytics. Status: ${response.status}`);
+    }
+    return response.json();
+  },
+
+  // Get all internships for a company
+  async getAllInternships(token: string) {
+    const response = await fetch(`${API_CONFIG.APE_API_SERVER}/api/internships/`, {
+      method: 'GET',
+      headers: getAuthHeaders(token),
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to get internships. Status: ${response.status}`);
+    }
+    return response.json();
+  },
+
+  // Get specific internship with applications
+  async getInternshipDetails(token: string, internshipId: number) {
+    const response = await fetch(`${API_CONFIG.APE_API_SERVER}/api/internships/${internshipId}/`, {
+      method: 'GET',
+      headers: getAuthHeaders(token),
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to get internship details. Status: ${response.status}`);
+    }
+    return response.json();
+  },
+
+  // Update student selection for interview
+  async selectStudentForInterview(token: string, applicationId: number) {
+    const response = await fetch(`${API_CONFIG.APE_API_SERVER}/api/internship-applications/${applicationId}/`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(token),
+      credentials: 'include',
+      body: JSON.stringify({ is_selected: true }),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to select student. Status: ${response.status}`);
+    }
+    return response.json();
+  },
 };
 
 export type ApeUserResponse = any;
+export type CompanyAnalytics = any;
+export type InternshipData = any;
+export type StudentApplication = any;
 

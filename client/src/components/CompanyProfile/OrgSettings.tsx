@@ -70,7 +70,7 @@ export default function OrgSettings() {
   useEffect(() => {
     const fetchCompanyData = async () => {
       try {
-        const token = localStorage.getItem('authToken') || '';
+        const token = localStorage.getItem('auth_token') || '';
 
         if (!token) {
           console.log("no token")
@@ -141,7 +141,7 @@ export default function OrgSettings() {
   const handleSaveSettings = async () => {
     setIsSaving(true);
     try {
-      const token = localStorage.getItem('authToken') || '';
+      const token = localStorage.getItem('auth_token') || '';
       if (!token) {
         console.log("no token");
         return;

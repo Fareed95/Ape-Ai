@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSession } from "next-auth/react";
 import OrgAnalytics from "@/components/CompanyProfile/OrgAnalytics";
 import OrgSettings from "@/components/CompanyProfile/OrgSettings";
 import InterviewPanels from "@/components/CompanyProfile/InterviewPanels";
@@ -26,6 +25,7 @@ import {
   Check,
 } from "lucide-react";
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/context/AuthContext";
 
 const StatCard = ({ title, value, icon: Icon, trend }: { title: string, value: string, icon: any, trend: any }) => (
   <div className="bg-black p-4 sm:p-6 rounded-xl border border-neutral-800 hover:border-neutral-700 transition-all duration-300">
@@ -386,8 +386,8 @@ const MeetingScheduler = () => {
 export default function OrganizationDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const { data: session } = useSession();
-  const orgName = session?.user?.name || "Organization";
+  const { user } = useAuth();
+  const orgName = user?.name || "Organization";
 
   const tabs = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },

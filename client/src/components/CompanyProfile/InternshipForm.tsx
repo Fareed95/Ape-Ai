@@ -34,7 +34,7 @@ const FormField = ({ label, name, value, onChange, type = "text", icon: Icon, re
   </div>
 );
 
-const InternshipForm = () => {
+const InternshipForm = ({ onInternshipCreated }: { onInternshipCreated?: () => void }) => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -53,7 +53,7 @@ const InternshipForm = () => {
     console.log('Submitting form data:', formData);
 
     try {
-      const token = localStorage.getItem('authToken') || '';
+      const token = localStorage.getItem('auth_token') || '';
       if (!token) {
         throw new Error('No authentication token found');
       }
@@ -104,6 +104,11 @@ const InternshipForm = () => {
       });
 
       alert('Internship posted successfully!');
+      
+      // Call the callback to refresh parent data
+      if (onInternshipCreated) {
+        onInternshipCreated();
+      }
 
     } catch (error) {
       console.error('Error posting internship:', error);

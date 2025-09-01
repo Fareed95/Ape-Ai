@@ -209,14 +209,13 @@ const UserInfoPage = () => {
   const [interviewreview, setInterviewreview] = useState<InterviewSlot[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
-  const { data: session } = useSession();
   const { contextsetIsLoggedIn, contextsetEmail, contextsetName, contextisLoggedIn, contextsetInterviewdeets, contextInterviewdeets } = useUserContext();
 
   type InterviewSlot = { id: number; internship_name: string; company_name: string; interviw_time: string; is_selected?: boolean };
 
   const Getuserinfo = async () => {
     setIsLoading(true); // Set loading to true when fetching starts
-    const token = localStorage.getItem('authToken') || '';
+    const token = localStorage.getItem('auth_token') || '';
 
     if (!token) {
       console.log("no token")
@@ -225,6 +224,11 @@ const UserInfoPage = () => {
     }
 
     try {
+      if (!token) {
+        console.log("no token");
+        setIsLoading(false);
+        return;
+      }
       const result = await apeService.getUser(token);
 
       setInterviewSlots(result.interview_selected);
@@ -262,8 +266,8 @@ const UserInfoPage = () => {
   };
 
   const handleDownloadResume = async () => {
-    const token = localStorage.getItem('authToken') || '';
-    const data = await apeService.downloadResume(token, session?.user?.email as string);
+    const token = localStorage.getItem('auth_token') || '';
+    const data = await apeService.downloadResume(token, user?.email as string);
     // saveAs(data, `${session?.user?.name}.pdf`);
   }
 
@@ -316,18 +320,18 @@ const UserInfoPage = () => {
                   <AnimatedTooltip
                     items={[{
                       id: 1,
-                      name: session?.user?.name || "User",
+                      name: user?.name || "User",
                       designation: "Member",
-                      image: session?.user?.image || "/default-avatar.png",
+                      image: user?.profile_image || "/default-avatar.png",
                     }]}
                   />
                 </div>
               </div>
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400 font-heading">{session?.user?.name}</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400 font-heading">{user?.name}</h2>
                 <p className="text-sm text-neutral-400 font-sans flex items-center mt-1">
                   <GraduationCap className="w-4 h-4 mr-1.5 text-neutral-500" />
-                  {session?.user?.email}
+                  {user?.email}
                 </p>
                 
                 <div className="flex mt-3 gap-3">
@@ -356,7 +360,7 @@ const UserInfoPage = () => {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => router.push(`/portfolio/${session?.user?.email}`)}
+                onClick={() => router.push(`/portfolio/${user?.email}`)}
                 className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-500 hover:to-teal-500 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-lg shadow-blue-600/25 border border-blue-500/20 font-sans flex items-center justify-center gap-2"
               >
                 <ExternalLink className="w-4 h-4" />

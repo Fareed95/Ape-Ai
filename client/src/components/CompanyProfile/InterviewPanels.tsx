@@ -1,29 +1,24 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { useUserContext } from '@/context/UserInfo';
 import { motion } from 'framer-motion';
 import InternshipForm from '@/components/CompanyProfile/InternshipForm'
 import { apeService } from '@/api/userProfileService';
+import { useAuth } from '@/context/AuthContext';
 
 export default function StudentDashboard() {
   const [internships, setInternships] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { contextorganisation } = useUserContext();
+  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
-  const handleSelectForInterview = async (studentId : any) => {
-    console.log('Selected student ID:', studentId);
+  const handleSelectForInterview = async (applicationId: number) => {
+    console.log('Selected application ID:', applicationId);
     try {
-      const token = localStorage.getItem('authToken') || '';
-      const updatedStudent = await apeService.updateInternship(token, studentId, { is_selected: true });
+      const token = localStorage.getItem('auth_token') || '';
+      await apeService.selectStudentForInterview(token, applicationId);
 
-      setInternships((prevInternships : any) =>
-        prevInternships.map((internship : any) => ({
-          ...internship,
-          students_under_review: internship.students_under_review.filter((student : any) => student.id !== studentId),
-          students_for_interview: [...internship.students_for_interview, updatedStudent]
-        }))
-      );
-
+      // Refresh the internships data
+      fetchInternships();
       alert('Student selected for interview successfully!');
     } catch (error) {
       console.error('Error updating student status:', error);
@@ -31,13 +26,41 @@ export default function StudentDashboard() {
     }
   };
 
-  useEffect(() => {
-    if (contextorganisation && contextorganisation.length > 0) {
-      const allInternships = contextorganisation.flatMap((company : any) => company.internships);
-      setInternships(allInternships as any);
+  const fetchInternships = async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem('auth_token') || '';
+      
+      if (!token || !user) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Get user data to find company ID
+      const userData = await apeService.getUser(token);
+      const companyId = userData.companies?.[0]?.id;
+      
+      if (!companyId) {
+        setError('No company found');
+        setIsLoading(false);
+        return;
+      }
+
+      // Get company internships
+      const companyInternships = await apeService.getCompanyInternships(token, companyId);
+      setInternships(companyInternships || []);
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching internships:', error);
+      setError('Failed to load internships');
+    } finally {
       setIsLoading(false);
     }
-  }, [contextorganisation]);
+  };
+
+  useEffect(() => {
+    fetchInternships();
+  }, [user]);
 
   useEffect(() => {
     console.log('Internships data:', internships);
@@ -47,6 +70,23 @@ export default function StudentDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6 text-center max-w-md">
+          <p className="text-red-400 font-semibold mb-2">Error Loading Internships</p>
+          <p className="text-neutral-300 mb-4">{error}</p>
+          <button 
+            onClick={fetchInternships}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
@@ -69,7 +109,7 @@ export default function StudentDashboard() {
           <h2 className="text-xl font-semibold text-white">
             {/* <Briefcase className="w-5 h-5" /> */}
             Internship Applications</h2>
-          <InternshipForm />
+          <InternshipForm onInternshipCreated={fetchInternships} />
         </div>
 
         {/* Internship Grid */}
@@ -162,7 +202,7 @@ export default function StudentDashboard() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className="flex-1 sm:flex-none bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm px-4 py-2 rounded-lg transition-all duration-200 shadow-lg shadow-blue-500/20"
-                            onClick={() => handleSelectForInterview(internship.id)}
+                            onClick={() => handleSelectForInterview(student.application_id || student.id)}
                           >
                             Select for Interview
                           </motion.button>
