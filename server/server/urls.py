@@ -8,6 +8,7 @@ from django.contrib.staticfiles.urls import  staticfiles_urlpatterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/authentication/',include('api.urls')),
+    path('api/community/', include('community.urls')),
     path('api/',include('demo.urls')),
     path('api/',include('testimonials.urls')),
     path('api/',include('certificate.urls')),

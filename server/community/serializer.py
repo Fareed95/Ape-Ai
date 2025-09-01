@@ -3,8 +3,14 @@ from .models import (
     Community, Post, File, Vote, Comment, Reply,
     CommentVote, CommentReplyVote, SavePost, CommunityUsers
 )
-from authentication.serializers import UserSerializer
+from api.serializer import StudentSerializer, CompanySerializer
 
+class DynamicUserSerializer(serializers.Serializer):
+    """Returns StudentSerializer if is_company=False, else CompanySerializer"""
+    def to_representation(self, instance):
+        if getattr(instance, 'is_company', False):
+            return CompanySerializer(instance).data
+        return StudentSerializer(instance).data
 
 
 class FileSerializer(serializers.ModelSerializer):
@@ -17,7 +23,7 @@ class FileSerializer(serializers.ModelSerializer):
 
 
 class VoteSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = DynamicUserSerializer(read_only=True)
 
     class Meta:
         model = Vote
@@ -27,7 +33,7 @@ class VoteSerializer(serializers.ModelSerializer):
 
 
 class CommentVoteSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = DynamicUserSerializer(read_only=True)
 
     class Meta:
         model = CommentVote
@@ -36,7 +42,7 @@ class CommentVoteSerializer(serializers.ModelSerializer):
 
 
 class CommentReplyVoteSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = DynamicUserSerializer(read_only=True)
 
     class Meta:
         model = CommentReplyVote
@@ -44,7 +50,7 @@ class CommentReplyVoteSerializer(serializers.ModelSerializer):
         read_only_fields = ['user', 'created_at']
 
 class ReplySerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = DynamicUserSerializer(read_only=True)
     reply_votes_like_count = serializers.SerializerMethodField()
     reply_votes_dislike_count = serializers.SerializerMethodField()
     class Meta:
@@ -60,7 +66,7 @@ class ReplySerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = DynamicUserSerializer(read_only=True)
     replies = ReplySerializer(many=True, read_only=True)
     comment_votes_like_count = serializers.SerializerMethodField()
     comment_votes_dislike_count = serializers.SerializerMethodField()
@@ -80,7 +86,7 @@ class CommentSerializer(serializers.ModelSerializer):
     
 
 class SavePostSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = DynamicUserSerializer(read_only=True)
 
     class Meta:
         model = SavePost
@@ -88,7 +94,7 @@ class SavePostSerializer(serializers.ModelSerializer):
         read_only_fields = ['user', 'created_at']
 
 class CommunityUserSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = DynamicUserSerializer(read_only=True)
 
     class Meta:
         model = CommunityUsers
@@ -161,7 +167,7 @@ class CommunitySerializer(serializers.ModelSerializer):
         model = Community
         fields = [
             "id", "name", "description", "created_at",
-            "total_members_count", "user_role"
+            "total_members_count", "user_role", "profile_picture"
         ]
 
     def get_total_members_count(self, obj):

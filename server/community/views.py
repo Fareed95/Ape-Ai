@@ -3,8 +3,8 @@ import jwt
 from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
-from authentication.models import User
+from rest_framework.parsers import MultiPartParser, FormParser
+from api.models import User
 from utils.usercheck import authenticate_request
 from .models import (
     Community, Post, File, Vote, Comment, Reply,
@@ -14,7 +14,6 @@ from .serializer import (
     CommunitySerializer, PostSerializer, FileSerializer, VoteSerializer,
     CommentSerializer, ReplySerializer, CommentVoteSerializer,
     CommentReplyVoteSerializer, SavePostSerializer, CommunityUserSerializer,
-    UserSerializer
 )
 
 
@@ -91,22 +90,38 @@ class PostAPIView(APIView):
                         status=status.HTTP_403_FORBIDDEN)
 
 
-
 # ------------------------
 # Community API
 # ------------------------
 
 class CommunityAPIView(APIView):
-    def get(self, request):
-        user = authenticate_request(request, need_user=True)
-        communities = Community.objects.all()
-        serializer = CommunitySerializer(
-            communities, 
-            many=True, 
-            context={'request': request, 'user': user}  # user explicitly pass karo
-        )
-        return Response(serializer.data)
+    parser_classes = [MultiPartParser, FormParser] 
+    def get(self, request, pk=None):   # 👈 yaha default None
+            user = authenticate_request(request, need_user=True)
 
+            if not pk:  # list view
+                communities = Community.objects.all()
+                serializer = CommunitySerializer(
+                    communities,
+                    many=True,
+                    context={'request': request, 'user': user}
+                )
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            # detail view
+            community = Community.objects.filter(id=pk).first()
+            if not community:
+                return Response(
+                    {"error": "Community not found"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            serializer = CommunitySerializer(
+                community,
+                many=False,
+                context={'request': request, 'user': user}
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
     def post(self, request):
         user = authenticate_request(request, need_user=True)
         serializer = CommunitySerializer(data=request.data)

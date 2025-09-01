@@ -1,7 +1,8 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from urllib.parse import urlparse
+from corsheaders.defaults import default_headers
+
 
 load_dotenv()
 
@@ -22,11 +23,9 @@ ALLOWED_HOSTS = [
     ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:3001",
-    "http://127.0.0.1:3001",
     'https://megahackathon.vercel.app',
     "https://ape.crodlin.in",
+    'http://localhost:3001'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -34,33 +33,15 @@ CSRF_TRUSTED_ORIGINS = [
     'https://templetrepo.vercel.app/',
     'https://megahackathon.vercel.app/',
     "https://ape.crodlin.in",
+    'http://localhost:3001'
 ]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'x-auth-app'
+]
+
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'x-auth-app',
-]
-
-# Disable automatic slash appending to prevent URL conflicts
-APPEND_SLASH = False
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -75,7 +56,8 @@ INSTALLED_APPS = [
     'company',
     'portfolio',
     'corsheaders',
-    'mentor'
+    'mentor',
+    'community'
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -89,6 +71,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -97,6 +80,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'api.middleware.ExpiredUserCleanupMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'server.urls'
