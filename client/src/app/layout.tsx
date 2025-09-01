@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
+import { UserProvider } from "@/context/UserInfo";
+import { RoadmapProvider } from "@/context/RoadmapContext";
 
 export default function RootLayout({
   children,
@@ -28,9 +30,13 @@ export default function RootLayout({
       >
         <ToastProvider>
           <AuthProvider>
-            <Navbar />
-            {children}
-            <Footer />
+            <UserProvider>
+              <RoadmapProvider>
+              <Navbar />
+              {children}
+              <Footer />
+              </RoadmapProvider>
+            </UserProvider>
           </AuthProvider>
         </ToastProvider>
       </body>

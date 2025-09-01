@@ -17,11 +17,11 @@ export const IMAGES = {
   
   // Default images
   DEFAULT_AVATAR: '/images/default-avatar.png',
-  DEFAULT_PROFILE: '/images/default-profile.png',
+  DEFAULT_PROFILE: '/images/default-avatar.png',
   
   // Placeholder images
-  PLACEHOLDER_USER: '/images/placeholder-user.png',
-  PLACEHOLDER_COMPANY: '/images/placeholder-company.png',
+  PLACEHOLDER_USER: '/images/default-avatar.png',
+  PLACEHOLDER_COMPANY: '/images/default-avatar.png',
 } as const;
 
 // Type for image keys

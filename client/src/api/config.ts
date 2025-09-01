@@ -1,6 +1,9 @@
 // API Configuration
 export const API_CONFIG = {
   BASE_URL: 'http://localhost:8000',
+  MODEL_API_SERVER: process.env.NEXT_PUBLIC_MODEL_API_SERVER || 'https://model-ape.crodlin.in',
+  APE_API_SERVER: process.env.NEXT_PUBLIC_APE_API_SERVER || 'https://api-ape.crodlin.in',
+  CHAT_BOTS_API_SERVER: 'http://localhost:8010',
 
   // Authentication endpoints
   ENDPOINTS: {
