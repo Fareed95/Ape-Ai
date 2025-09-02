@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { motion } from 'framer-motion';
 import { IMAGES } from '@/constants/image';
-import ApiTest from '@/components/ApiTest';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -261,16 +260,6 @@ export default function RegisterPage() {
               Sign in
             </Link>
           </div>
-        </motion.div>
-
-        {/* API Test Component */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="mt-6"
-        >
-          <ApiTest />
         </motion.div>
 
         {/* Back to Home */}

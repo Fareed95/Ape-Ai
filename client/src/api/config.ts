@@ -1,6 +1,9 @@
 // API Configuration
 export const API_CONFIG = {
   BASE_URL: 'http://localhost:8000',
+  MODEL_API_SERVER: process.env.NEXT_PUBLIC_MODEL_API_SERVER || 'https://model-ape.crodlin.in',
+  APE_API_SERVER: process.env.NEXT_PUBLIC_APE_API_SERVER || 'https://api-ape.crodlin.in',
+  CHAT_BOTS_API_SERVER: 'http://localhost:8010',
 
   // Authentication endpoints
   ENDPOINTS: {
@@ -11,6 +14,18 @@ export const API_CONFIG = {
     PASSWORD_RESET_REQUEST: '/api/authentication/password-reset-request',
     PASSWORD_RESET: '/api/authentication/password-reset',
     USER_DATA: '/api/authentication/user',
+  },
+
+  // Portfolio endpoints
+  PORTFOLIO: {
+    USER_DETAILS: (email: string) => `/api/userdetails/${email}/`,
+    TOOL_NAMES: '/api/toolnames/',
+    TOOLS: '/api/tools/',
+    TOOL_COMPONENTS: '/api/toolcomponents/',
+    EDUCATION: '/api/education/',
+    CERTIFICATES: '/api/certificates/',
+    PROJECTS: '/api/projects/',
+    LINKS: '/api/links/',
   },
 
   COMMUNITY: {

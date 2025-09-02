@@ -215,7 +215,7 @@ function Navbar() {
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                       className="flex items-center gap-2 px-2 py-1.5 bg-white/5 hover:bg-white/10 rounded-full transition-colors border border-white/10"
-                    > 
+                    >
                       <div className="flex items-center">
                         <div className="w-8 h-8 rounded-full overflow-hidden">
                           <Image 
@@ -250,7 +250,7 @@ function Navbar() {
                             <button
                               onClick={() => {
                                 setUserDropdownOpen(false);
-                                router.push(user?.is_company ? '/CompanyMain' : '/Main');
+                                router.push(user?.is_company ? `/CompanyProfile/${user?.email}` : `/UserProfile/${user?.email}`);
                               }}
                               className="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors flex items-center"
                             >
@@ -431,7 +431,7 @@ function Navbar() {
                         <button
                           onClick={() => {
                             closeMobileMenu();
-                            router.push(user?.is_company ? '/CompanyMain' : '/Main');
+                            router.push(user?.is_company ? `/CompanyProfile/${user?.email}` : `/UserProfile/${user?.email}`);
                           }}
                           className="py-2.5 px-4 bg-white/5 hover:bg-white/10 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center"
                         >
