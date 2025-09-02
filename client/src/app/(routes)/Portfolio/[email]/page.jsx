@@ -5,7 +5,7 @@ import { useState, useEffect, use } from 'react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { usePortfolio } from '@/hooks/usePortfolio';
-import { portfolioService } from '@/api/portfolioService';
+// import { portfolioService } from '@/api/portfolioService';
 import {
     TemplateOne,
     TemplateTwo,
@@ -45,85 +45,7 @@ const Page = ({ params }) => {
     const [certificateItems, setCertificateItems] = useState([]);
     const [toolItems, setToolItems] = useState([]);
 
-    // Fetch portfolio data
-    const fetchPortfolioData = async () => {
-        try {
-            setLoading(true);
-            const data = await portfolioService.getPortfolio(decodedEmail);
-            setPortfolioData(data);
-            setUserDetails({
-                id: data.userDetails.id,
-                name: data.userDetails.name || '',
-                email: data.userDetails.email || '',
-                phone_number: data.userDetails.phone_number || '',
-                about: data.userDetails.about || '',
-                education: data.userDetails.education || [],
-                project: data.userDetails.project || [],
-                certificate: data.userDetails.certificate || [],
-                tool: data.userDetails.tool || [],
-            });
-        } catch (err) {
-            console.error('Failed to fetch portfolio:', err);
-            setError('Failed to fetch portfolio data');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Load initial data
-    useEffect(() => {
-        if (decodedEmail) {
-            fetchPortfolioData();
-        }
-    }, [decodedEmail]);
-
-    // Set initial template
-    useEffect(() => {
-        if (portfolioData?.userDetails?.template !== undefined) {
-            const templateMap = {
-                0: 'template1',
-                1: 'template2',
-                2: 'template3'
-            };
-            setCurrentTemplate(templateMap[portfolioData.userDetails.template] || 'template1');
-        }
-    }, [portfolioData]);
-
-    // Populate form fields when editing
-    useEffect(() => {
-        if (isEditing && portfolioData) {
-            if (portfolioData.userDetails?.education) {
-                setEducationItems(portfolioData.userDetails.education.map(edu => ({
-                    ...edu,
-                    id: edu.id
-                })));
-            }
-            if (portfolioData.userDetails?.project) {
-                setProjectItems(portfolioData.userDetails.project.map(proj => ({
-                    ...proj,
-                    id: proj.id,
-                    links: proj.link ? proj.link.map(link => ({
-                        id: link.id,
-                        name: link.name,
-                        url: link.url
-                    })) : []
-                })));
-            }
-            if (portfolioData.toolNames) {
-                setToolItems(portfolioData.toolNames.map(toolName => ({
-                    id: toolName.id,
-                    name: toolName.name,
-                    tools: toolName.tools ? toolName.tools.map(tool => ({
-                        id: tool.id,
-                        name: tool.name
-                    })) : []
-                })));
-            }
-        }
-    }, [isEditing, portfolioData]);
-
-     // Education handlers
-     const handleAddEducation = () => {
+    const handleAddEducation = () => {
         setEducationItems([...educationItems, {
             id: `new-${Date.now()}`,  // Use string prefix to identify new items
             degree: '',
@@ -469,7 +391,6 @@ const Page = ({ params }) => {
             return toolName;
         }));
     };
-
 
     const handleToolItemChange = (toolNameId, toolId, value) => {
         setToolItems(toolItems.map(toolName => {
@@ -853,7 +774,6 @@ const Page = ({ params }) => {
         }
     };
 
-   
     // Modify handleTemplateChange to update both local state and backend
     const handleTemplateChange = async (template) => {
         let templateValue;
@@ -895,35 +815,37 @@ const Page = ({ params }) => {
         }
     };
 
-   // Render the appropriate template
-   const renderTemplate = () => {
-    return (
-        <motion.div
-            key={currentTemplate}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={pageTransitionVariants}
-            transition={{ duration: 0.3 }}
-        >
-            {(() => {
-                switch (currentTemplate) {
-                    case 'template1':
-                        return <TemplateOne userDetails={userDetails} portfolioData={portfolioData} />;
-                    case 'template2':
-                        return <TemplateTwo userDetails={userDetails} portfolioData={portfolioData} />;
-                    case 'template3':
-                        return <TemplateThree userDetails={userDetails} portfolioData={portfolioData} />;
-                    default:
-                        return <TemplateOne userDetails={userDetails} portfolioData={portfolioData} />;
-                }
-            })()}
-        </motion.div>
-    );
-};
+    // Render the appropriate template
+    const renderTemplate = () => {
+        return (
+            <motion.div
+                key={currentTemplate}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={pageTransitionVariants}
+                transition={{ duration: 0.3 }}
+            >
+                {(() => {
+                    switch (currentTemplate) {
+                        case 'template1':
+                            return <TemplateOne userDetails={userDetails} portfolioData={portfolioData} />;
+                        case 'template2':
+                            return <TemplateTwo userDetails={userDetails} portfolioData={portfolioData} />;
+                        case 'template3':
+                            return <TemplateThree userDetails={userDetails} portfolioData={portfolioData} />;
+                        default:
+                            return <TemplateOne userDetails={userDetails} portfolioData={portfolioData} />;
+                    }
+                })()}
+            </motion.div>
+        );
+    };
 
-    if (loading) return <PortfolioSkeleton />;
-    if (authLoading) return <PortfolioSkeleton />;
+    if (loading) {
+        return <PortfolioSkeleton />;
+    }
+
     if (error) {
         return (
             <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
@@ -941,9 +863,11 @@ const Page = ({ params }) => {
     return (
         <>
             <div className="min-h-screen bg-neutral-950 relative">
+                {/* Main content */}
                 {renderTemplate()}
 
-                {/* Enhanced edit button */}
+
+            {/* Enhanced edit button */}
             {isOwner && (
                     <div className="fixed bottom-4 sm:bottom-6 md:bottom-8 right-4 sm:right-6 md:right-8 z-50 flex flex-col sm:flex-row gap-3 sm:space-x-4">
                         <motion.button
@@ -1463,6 +1387,8 @@ const Page = ({ params }) => {
                         </motion.div>
                     </motion.div>
                 )}
+
+
             </div>
         </>
     );
