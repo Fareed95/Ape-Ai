@@ -130,7 +130,7 @@ data.
 
 ``` json
 {
-  "demo_interview": false,
+  "internship_id":3,
   "question_id": 12,
   "answer": "I am a Computer Science student skilled in Django and REST APIs."
 }

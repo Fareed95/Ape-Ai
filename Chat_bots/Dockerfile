@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 # Start the server
-CMD ["gunicorn", "--workers","4","--bind", "0.0.0.0:8010", "Chat_bots.wsgi:application"]
+CMD ["gunicorn", "--workers","4","--bind", "0.0.0.0:8080", "Chat_bots.wsgi:application"]

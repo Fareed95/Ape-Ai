@@ -31,4 +31,3 @@ def authenticate_request(request, need_user=False):
         raise AuthenticationFailed('User not found!')
 
     return user
-
