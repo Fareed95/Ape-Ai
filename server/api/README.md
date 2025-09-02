@@ -26,7 +26,7 @@ flowchart TD
     O -- Valid --> P[Update password & send confirmation]
     O -- Invalid --> Q[Return error]
   end
-
+  
   subgraph OAuth Login
     R[User provides email and name] --> S{User exists?}
     S -- No --> T[Create active user & send welcome email]
