@@ -16,7 +16,7 @@ class PsychologyChatBotAPIView(APIView):
             return Response({'error': 'Email and user input are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Fetch or create the user
-        user, created = Psychology_User.objects.get_or_create(chat_history_unique_id=email)
+        user= Psychology_User.objects.get_or_create(chat_history_unique_id=email)
 
         summary = user.summary
 
@@ -28,12 +28,8 @@ class PsychologyChatBotAPIView(APIView):
         # Feed the chat history to your LLM
         chat_bot_response,summary = psycholgy_chat_bot(user_input=user_input,summary_of_previous_chats=summary, latest_chat=latest_chat)
         
-        
 
-
-
-        # Save the current conversation
-        new_chat = Chat_bot.objects.create(
+        Chat_bot.objects.create(
             question=user_input,
             answer=chat_bot_response,
             Chat_bot_User=user

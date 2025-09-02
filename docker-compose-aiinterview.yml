@@ -1,11 +1,11 @@
 services :
-  ai-interview:
+  chat-bots:
     build:
-      context: ./AiInterview
+      context: ./Chat_bots
       dockerfile: Dockerfile
-    container_name: ai-interview
+    container_name: chat-bots
     volumes:
-    - ./AiInterview:/app
+    - ./Chat_bots:/app
     ports:
     - "8010:8010"
     networks :

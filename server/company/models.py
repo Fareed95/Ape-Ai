@@ -30,7 +30,8 @@ class Internship(models.Model):
     openings = models.IntegerField(default=1)  # Number of Open Positions
     application_deadline = models.DateField()  # Last Date to Apply
     posted_at = models.DateTimeField(auto_now_add=True)  # Auto Timestamp
-
+    Interviewer_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='internship_intervieww', null=True, blank=True)
+    
 
 
 class StudentsRegistered(models.Model):
