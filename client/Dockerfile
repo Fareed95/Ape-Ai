@@ -8,7 +8,8 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
-RUN npm install -g next
+RUN npm install --save-dev @types/three
+
 
 # Copy the rest of the project files
 COPY . .

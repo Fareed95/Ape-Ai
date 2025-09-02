@@ -160,3 +160,23 @@ class StudentsRegisteredView(APIView):
         # Update with dynamic fields from the request data
         students.update(**data)
         return Response({"message": "Data updated successfully."}, status=status.HTTP_200_OK)
+    
+
+class RecommendedInternshipsView(APIView):
+    """
+    POST: Receive a keyword and return all internships whose title contains that keyword.
+    """
+    def post(self, request):
+        keyword = request.data.get('keyword', '').strip()
+
+        if not keyword:
+            return Response({"error": "Keyword is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter internships whose title contains the keyword (case-insensitive)
+        internships = Internship.objects.filter(title__icontains=keyword)
+
+        if not internships.exists():
+            return Response({"message": f"No internships found matching '{keyword}'."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = InternshipSerializer(internships, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

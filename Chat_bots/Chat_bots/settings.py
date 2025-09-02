@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv 
-from urllib.parse import urlparse
+from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
@@ -24,15 +24,22 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '0.0.0.0', 
+    'bot-ape.crodlin.in'
     ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    'https://templetrepo.vercel.app/',
+    "http://localhost:3001",
+    "https://ape.crodlin.in"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
-    'https://templetrepo.vercel.app/',
+    "http://localhost:3001",
+    "https://ape.crodlin.in"
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'x-auth-app'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
