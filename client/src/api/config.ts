@@ -54,7 +54,7 @@ export const API_CONFIG = {
 
 // Helper function to get full API URL
 export const getApiUrl = (endpoint: string): string => {
-  return `${API_CONFIG.BASE_URL}${endpoint}`;
+  return `${API_CONFIG.APE_API_SERVER}${endpoint}`;
 };
 
 // Helper function to get headers with auth token
