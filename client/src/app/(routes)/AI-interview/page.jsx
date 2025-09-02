@@ -87,8 +87,11 @@ export default function Page() {
   }, [])
 
   return (
-    <div className='h-[100vh] flex items-center justify-center'>
-      <Orb heightVh={70} text={transcript} />
+  <div className='h-[100vh] flex flex-col items-center justify-center gap-4'>
+    <Orb heightVh={70}  />
+    <div className='text-white text-lg text-center max-w-xl px-4'>
+      {transcript || "Listening..."}
     </div>
-  )
+  </div>
+)
 }

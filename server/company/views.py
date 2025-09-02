@@ -10,7 +10,9 @@ from .models import Company, Internship, StudentsRegistered
 from .serializers import CompanyProfileSerializer, InternshipSerializer, StudentsRegisteredSerializer
 from django.core.mail import send_mail
 from api.models import User
-
+from rest_framework.parsers import MultiPartParser, FormParser
+from faster_whisper import WhisperModel
+import tempfile
 
 # 🚀 Company Views
 class CompanyView(APIView):
@@ -180,3 +182,21 @@ class RecommendedInternshipsView(APIView):
 
         serializer = InternshipSerializer(internships, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+model = WhisperModel("base")
+class TranscribeAudioView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request):
+        audio_file = request.FILES.get("file")
+        if not audio_file:
+            return Response({"error": "No audio file"}, status=400)
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as tmp:
+            for chunk in audio_file.chunks():
+                tmp.write(chunk)
+            tmp_path = tmp.name
+
+        segments, _ = model.transcribe(tmp_path)
+        text = " ".join([s.text for s in segments])
+        return Response({"text": text})

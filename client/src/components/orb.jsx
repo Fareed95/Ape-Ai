@@ -274,31 +274,6 @@ export default function Orb({
     };
   }, [hue, hoverIntensity, rotateOnSound]);
 
-  return (
-  <div
-    ref={ctnDom}
-    className="orb-container"
-    style={{ height: `${heightVh}vh`, width: '100%', position: 'relative' }}
-  >
-    {/* Add this inside the same div */}
-    {text && (
-      <p
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          color: 'white',
-          textAlign: 'center',
-          width: '80%',
-          fontSize: '1.2rem',
-          pointerEvents: 'none', // lets clicks pass through
-        }}
-      >
-        {text}
-      </p>
-    )}
-  </div>
-);
+  return <div ref={ctnDom} className="orb-container"  style={{ height: `${heightVh}vh`, width: '100%' }}  />;
 }
 
