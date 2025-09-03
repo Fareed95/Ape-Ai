@@ -10,61 +10,61 @@ from django.utils.html import strip_tags
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Certificate
-from .serializers import CertificateSerializer
+from portfolio.models import UserDetails
 from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.http import HttpResponse
 from django.core.mail import EmailMessage
 from django.utils.html import strip_tags
 import tempfile
-from django.shortcuts import get_object_or_404
+from utils.usercheck import authenticate_request
+
+from io import BytesIO
 
 class CertificateView(APIView):
-    def get(self, request):
-        certificates = Certificate.objects.all()
-        serializer = CertificateSerializer(certificates, many=True)
-        return Response(serializer.data)
-
     def post(self, request):
-        serializer = CertificateSerializer(data=request.data)
-        if serializer.is_valid():
-            certificate = serializer.save()
+        user = authenticate_request(request, True)
+        name = request.data.get("name")
+        if not name:
+            return Response({"error": "Certificate name is required"}, status=400)
 
-            # Prepare certificate context
-            context = {
-                'name': certificate.user.name,
-                'name_of_certificate': certificate.name,
-                'competition_battled': certificate.competition_battled,
-                'competition_won': certificate.competition_won,
-            }
+        # Prepare context
+        context = {
+            'name': user.name,
+            'name_of_certificate': name,
+        }
 
-            # Generate certificate PDF
-            html_content = render_to_string('certificate.html', context)
-            certificate_name = f"{certificate.user.name}_{certificate.name}.pdf"
+        userdetails = UserDetails.objects.filter(user=user).first()
 
-            with tempfile.NamedTemporaryFile(delete=True, suffix=".pdf") as temp_pdf:
-                HTML(string=html_content).write_pdf(temp_pdf.name)
+        Certificate.objects.create(
+            name = name,
+            user = userdetails
+        )
 
-                # Render the cool GenZ email template
-                html_message = render_to_string('email_certificate.html', {'name': certificate.user.name})
-                plain_message = strip_tags(html_message)
-                 
+        # Generate PDF into memory
+        html_content = render_to_string('certificate.html', context)
+        pdf_file = BytesIO()
+        HTML(string=html_content).write_pdf(pdf_file)
+        pdf_file.seek(0)
 
-                # Send email with PDF attachment
-                email = EmailMessage(
-                    subject=f'🎉 Congrats {certificate.user.name}! Your Certificate is Here! 🎓',
-                    body=plain_message,
-                    from_email='codecell@eng.rizvi.edu.in',  # Replace with your email
-                    to=[certificate.user.email],
-                )
-                email.attach(certificate_name, temp_pdf.read(), 'application/pdf')
-                email.content_subtype = "html"  # Set content type to HTML
-                email.send()
+        certificate_name = f"{user.name}_{name}.pdf"
 
-            return Response(serializer.data, status=201)
+        # Render email
+        html_message = render_to_string('email_certificate.html', {'name': user.name})
+        plain_message = strip_tags(html_message)
 
-        return Response(serializer.errors, status=400)
+        # Send email with attachment
+        email = EmailMessage(
+            subject=f'🎉 Congrats {user.name}! Your Certificate is Here! 🎓',
+            body=plain_message,
+            from_email='codecell@eng.rizvi.edu.in',
+            to=[user.email],
+        )
+        email.attach(certificate_name, pdf_file.read(), 'application/pdf')
+        email.content_subtype = "html"
+        email.send()
 
+        return Response({"message": "Certificate created and sent to user"}, status=201)
 
 
 class GenerateCertificate(APIView):
@@ -73,8 +73,6 @@ class GenerateCertificate(APIView):
         context = {
             'name': certificate.user.name,
             'name_of_certificate': certificate.name,
-            'competition_battled': certificate.competition_battled,
-            'competition_won': certificate.competition_won,
         }
         print(certificate.user.name)
 
