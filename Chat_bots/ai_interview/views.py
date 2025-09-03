@@ -9,10 +9,33 @@ from .models import (
 )
 from .llm import Ai_interview
 from utils.usercheck import authenticate_request
-
-
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from django.http import HttpResponse
+from django.core.mail import EmailMessage
+from django.utils.html import strip_tags
+import matplotlib.pyplot as plt
+from io import BytesIO
+from django.core.mail import EmailMultiAlternatives
+from email.mime.image import MIMEImage
 def home(request):
     return HttpResponse('Hello, World!')
+
+def generate_chart(performance, communication):
+    """Generate pie chart and return BytesIO buffer"""
+    fig, ax = plt.subplots()
+    ax.pie(
+        [performance, communication],
+        labels=['Performance', 'Communication'],
+        autopct='%1.1f%%'
+    )
+    ax.set_title("Interview Analysis")
+
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    plt.close(fig)   # free memory
+    buf.seek(0)
+    return buf
 
 
 class InterviewList(APIView):
@@ -42,7 +65,6 @@ class InterviewList(APIView):
                     user=interviewee
                 )
 
-                # Generate first AI question
                 try:
                     llm = Ai_interview(
                         company_data=sample_data.sample_company_data,
@@ -76,7 +98,7 @@ class InterviewList(APIView):
                     ])
 
                     total_questions = AiDemoInterview.objects.filter(sample_data__user=interviewee).count()
-
+                    print(total_questions)
                     if total_questions <= 5:
                         try:
                             llm = Ai_interview(
@@ -197,10 +219,59 @@ class InterviewList(APIView):
                         )
                     else:
                         # End interview
-                        interview.analysis = "LLM generated final analysis"
+                        interview.analysis = "You performed well in this internship. Here is the proper analysis of your interview! "
                         interview.performance = 9
                         interview.communication_skill = 8
                         interview.save()
+                        chart_buf = generate_chart(interview.performance, interview.communication_skill)
+
+                        html_message = render_to_string('interviewee.html', {
+                            'name': interviewee.name,
+                            'analysisis': interview.analysis,
+                        })
+                        plain_message = strip_tags(html_message)
+
+                        email = EmailMultiAlternatives(
+                            subject=f'Your detail analysis for internship applicsation of{internship.title}',
+                            body=plain_message,
+                            from_email='codecell@eng.rizvi.edu.in',
+                            to=[interviewee.email],
+                        )
+                        # Embed chart in HTML
+                        email.attach_alternative(html_message + '<br><img src="cid:chart_image">', "text/html")
+                        img = MIMEImage(chart_buf.getvalue(), _subtype="png")
+                        img.add_header('Content-ID', '<chart_image>')
+                        img.add_header('Content-Disposition', 'inline', filename="chart.png")
+                        email.attach(img)
+                        email.mixed_subtype = 'related'
+                        email.attachments[-1]['Content-ID'] = '<chart_image>'
+                        email.send()
+
+
+                        # ------------------- For Interviewer -------------------
+                        chart_buf = generate_chart(interview.performance, interview.communication_skill)
+
+                        html_message = render_to_string('interviewer.html', {
+                            'name': interviewee.name,
+                            'analysisis': interview.analysis,
+                        })
+                        plain_message = strip_tags(html_message)
+
+                        email = EmailMultiAlternatives(
+                            subject=f'New application for interview by {interviewee.name} for role {internship.title}',
+                            body=plain_message,
+                            from_email='codecell@eng.rizvi.edu.in',
+                            to=[internship.Interviewer_user.email],
+                        )
+                        # Embed chart in HTML
+                        email.attach_alternative(html_message + '<br><img src="cid:chart_image">', "text/html")
+                        img = MIMEImage(chart_buf.getvalue(), _subtype="png")
+                        img.add_header('Content-ID', '<chart_image>')
+                        img.add_header('Content-Disposition', 'inline', filename="chart.png")
+                        email.attach(img)
+                        email.mixed_subtype = 'related'
+                        email.attachments[-1]['Content-ID'] = '<chart_image>'
+                        email.send()
 
                         return Response(
                             {

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" style="margin:0;padding:0;">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Interview Update</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f6f9fc;">
+  <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#f6f9fc;padding:20px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:640px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #eaeaea;">
+          <tr>
+            <td style="padding:28px 28px 8px 28px;background:#0f172a;color:#ffffff;">
+              <h1 style="margin:0;font-size:22px;line-height:28px;font-weight:700;">Thanks for interviewing, {{ name }}!</h1>
+              <p style="margin:8px 0 0 0;font-size:14px;opacity:0.9;">Here’s a quick summary of your interview.</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:24px 28px;">
+              <h2 style="margin:0 0 12px 0;font-size:18px;color:#0f172a;">Summary</h2>
+              <p style="margin:0 0 16px 0;font-size:14px;color:#334155;line-height:1.6;">
+                {{ analysisis }}
+              </p>
+
+              <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:12px 0 4px 0;">
+                <tr>
+                  <td width="50%" style="padding:12px;border:1px solid #eaeaea;border-radius:8px;">
+                    <p style="margin:0;font-size:12px;color:#64748b;">Performance</p>
+                    <p style="margin:4px 0 0 0;font-size:20px;font-weight:700;color:#0f172a;">{{ performance }}</p>
+                  </td>
+                  <td width="50%" style="padding:12px;border:1px solid #eaeaea;border-radius:8px;">
+                    <p style="margin:0;font-size:12px;color:#64748b;">Communication Skills</p>
+                    <p style="margin:4px 0 0 0;font-size:20px;font-weight:700;color:#0f172a;">{{ communication_skills }}</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Chart placeholder: image injected by backend using CID -->
+              <div style="margin:20px 0 4px 0;text-align:center;">
+                <p style="margin:0 0 8px 0;font-size:13px;color:#64748b;">Your performance breakdown</p>
+                <!-- backend will append <img src="cid:chart_image" alt="Performance chart" width="560" style="max-width:100%;border:1px solid #eaeaea;border-radius:8px;" /> -->
+              </div>
+
+              <div style="margin-top:16px;padding:12px;border:1px dashed #d1d5db;border-radius:8px;background:#fafafa;">
+                <p style="margin:0;font-size:12px;color:#6b7280;">
+                  Tip: Focus on strengthening areas highlighted in the summary. You’ve got this 💪
+                </p>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:16px 28px;background:#fbfbfb;border-top:1px solid #eeeeee;">
+              <p style="margin:0;font-size:12px;color:#94a3b8;">
+                Sent by Ape AI • This is an automated message. Replies are not monitored.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
