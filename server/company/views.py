@@ -54,7 +54,6 @@ class CompanyView(APIView):
 # 🚀 Internship Views
 class InternshipView(APIView):
 
-    # GET: List all internships or retrieve a single internship by ID
     def get(self, request, internship_id=None):
         if internship_id:
             internship = get_object_or_404(Internship, id=internship_id)

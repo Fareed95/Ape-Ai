@@ -112,14 +112,14 @@ function PrevCources() {
   const { setRoadmap } = useRoadmap();
   const { contextemail } = useUserContext();
 
-  const MODEL_API_SERVER = 'http://localhost:8001';
+  const MODEL_API_SERVER = 'https://model-ape.crodlin.in';
 
   useEffect(() => {
     const fetchRoadmaps = async () => {
       try {
         console.log(MODEL_API_SERVER)
         setLoading(true);
-        const response = await fetch(`http://localhost:8001/user-roadmaps`, {
+        const response = await fetch(`https://model-ape.crodlin.in/user-roadmaps`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

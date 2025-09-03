@@ -69,7 +69,7 @@ class CertificateView(APIView):
 
 class GenerateCertificate(APIView):
     def get(self, request, id):
-        certificate = Certificate.objects.get(id=id)
+        certificate = Certificate.objects.get(id=id)    
         context = {
             'name': certificate.user.name,
             'name_of_certificate': certificate.name,

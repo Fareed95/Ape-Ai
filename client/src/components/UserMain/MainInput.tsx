@@ -61,7 +61,7 @@ function MainInput() {
 
     while (attempts < MAX_RETRIES && !success) {
       try {
-        const isResponse = await fetch(`http://localhost:8001/is-response`, {
+        const isResponse = await fetch(`https://model-ape.crodlin.in/is-response`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -80,7 +80,7 @@ function MainInput() {
 
         if (isResponseData.response === "yes") {
           const roadmapResponse = await fetch(
-            `http://localhost:8001/generate-roadmap-first-component`,
+            `https://model-ape.crodlin.in/generate-roadmap-first-component`,
             {
               method: "POST",
               headers: {
@@ -159,7 +159,7 @@ function MainInput() {
             roadmapData.roadmap_id
           );
 
-          const response = await fetch(`http://localhost:8001/generate-roadmap-all`, {
+          const response = await fetch(`https://model-ape.crodlin.in/generate-roadmap-all`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

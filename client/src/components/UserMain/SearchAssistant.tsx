@@ -21,7 +21,7 @@ const SearchAssistant = forwardRef((props : any, ref : any) => {
 
   const handlePsychologicalConversation = async (query : string) => {
     try {
-      const response = await fetch('http://localhost:8080/api/psychology_chat_bot/', {
+      const response = await fetch('https://bot-ape.crodlin.in/api/psychology_chat_bot/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const SearchAssistant = forwardRef((props : any, ref : any) => {
 
   const handleMakePrompt = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/make_prompt/', {
+      const response = await fetch('https://bot-ape.crodlin.in/api/make_prompt/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const SearchAssistant = forwardRef((props : any, ref : any) => {
 
   const handleDeleteConversation = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/delete_conversation/', {
+      const response = await fetch('https://bot-ape.crodlin.in/api/delete_conversation/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -105,7 +105,7 @@ export default function Home() {
     if (currentComponentIndex + 1 < total && total !== null && total !== undefined) {
       try {
         const newCompletedIndex = currentComponentIndex + 1;
-        const response = await fetch(`http://localhost:8001/roadmaps/${roadmapId}/complete`, {
+        const response = await fetch(`https://model-ape.crodlin.in/roadmaps/${roadmapId}/complete`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export default function Home() {
     if (currentComponentIndex > 0) {
       try {
         const newCompletedIndex = currentComponentIndex - 1;
-        const response = await fetch(`http://localhost:8001/roadmaps/${roadmapId}/complete`, {
+        const response = await fetch(`https://model-ape.crodlin.in/roadmaps/${roadmapId}/complete`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

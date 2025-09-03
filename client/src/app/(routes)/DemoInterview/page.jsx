@@ -99,7 +99,7 @@ export default function Page() {
         const formData = new FormData()
         formData.append('file', audioBlob, 'audio.webm')
 
-        const res = await fetch('http://localhost:8000/api/transcribe/', {
+        const res = await fetch('https://api-ape.crodlin.in/api/transcribe/', {
           method: 'POST',
           body: formData,
         })
