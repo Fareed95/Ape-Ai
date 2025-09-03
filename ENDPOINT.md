@@ -14,10 +14,10 @@ The documentation is divided into three main sections:
   Handles all the ai models api
   🔗 [Models API Documentation](models/README.md)
 
-
 3. **Ai Interview**
   It manages the mock and the real interview of the user 
   🔗 [Ai Interview API Documentation](Chat_bots/ai_interview/README.md)
+
 
 4. **Companies and Internship**
   It manages the internship data and the company data 

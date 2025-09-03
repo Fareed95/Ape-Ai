@@ -101,3 +101,10 @@ summary exists, a fresh conversation is started.
 -   `psychology_chat_bot/` → for chatting with bot.\
 -   `delete_conversation/` → to reset session.\
 -   `make_prompt/` → to get context-aware prompt for bot.
+
+---------------------------
+For any querries reach out to the developer 
+
+- Fareed Sayed 
+- +919977580370
+- fareedsayed95@gmail.com

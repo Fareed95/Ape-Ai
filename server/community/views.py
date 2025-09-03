@@ -23,12 +23,14 @@ from .serializer import (
 # Post API
 # ------------------------
 class PostAPIView(APIView):
-    def get(self, request):
+    def get(self, request, pk=None):
         user = authenticate_request(request, need_user=True)
-        posts = Post.objects.all().order_by('-created_at')
+        if not pk :
+            posts = Post.objects.all().order_by('-created_at')
+        else :
+            posts = Post.objects.filter(id=pk).order_by('-created_at') 
         serializer = PostSerializer(posts, many=True, context={'user': user})
         return Response(serializer.data)
-    
     def post(self, request):
         user = authenticate_request(request, need_user=True)
         community_id = request.data.get('community')
@@ -366,7 +368,7 @@ class CommentReplyVoteViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(vote)
             return Response(serializer.data)
 
-        # Create new vote
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)

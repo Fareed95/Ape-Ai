@@ -157,14 +157,56 @@ x-auth-app: <FRONTEND_SECRET>
 ```json
 [
   {
-    "id": 1,
-    "title": "Post Title",
-    "content": "Post content",
-    "community": 1,
-    "user": 5,
-    "created_at": "2025-09-02T12:20:00Z"
+    "id": 2,
+    "title": "Day 1 of deploying",
+    "content": "Day 1 of “Deploy on Your Own Laptop” series!
+No more burning cash on EC2 😎
+👉 Step 1: Make sure your laptop runs Linux OS (Ubuntu / Fedora / Debian etc.)
+Why? Because Linux = developer’s paradise for servers 🐧",
+    "created_at": "2025-09-01T02:47:03.984125Z",
+    "updated_at": "2025-09-01T02:47:03.984136Z",
+    "votes_like_count": 0,
+    "votes_dislike_count": 0,
+    "saved_count": 0,
+    "community_name": "Devops Community",
+    "files": [],
+    "user_vote": null,
+    "user_saved": false,
+    "user_comments": []
   }
 ]
+```
+
+---
+
+### Retrieve Specific Posts
+
+* **Route:** `/posts/<int:pk>`
+* **Method:** GET
+* **Auth:** User
+* **Description:** Get specific post details.
+* **Response:**
+
+```json
+
+  {
+    "id": 2,
+    "title": "Day 1 of deploying",
+    "content": "Day 1 of “Deploy on Your Own Laptop” series!
+No more burning cash on EC2 😎
+👉 Step 1: Make sure your laptop runs Linux OS (Ubuntu / Fedora / Debian etc.)
+Why? Because Linux = developer’s paradise for servers 🐧",
+    "created_at": "2025-09-01T02:47:03.984125Z",
+    "updated_at": "2025-09-01T02:47:03.984136Z",
+    "votes_like_count": 0,
+    "votes_dislike_count": 0,
+    "saved_count": 0,
+    "community_name": "Devops Community",
+    "files": [],
+    "user_vote": null,
+    "user_saved": false,
+    "user_comments": []
+  }
 ```
 
 ---
@@ -176,28 +218,31 @@ x-auth-app: <FRONTEND_SECRET>
 * **Auth:** User (must be member of community)
 * **Request Body:**
 
-```json
-{
-  "title": "New Post",
-  "content": "Post content",
-  "community": 1,
-  "files": []  // optional multiple files
-}
-```
+
+| Field      | Type     | Required | Description                                      |
+|------------|----------|----------|--------------------------------------------------|
+| `title`    | string   | Yes      | Title of the post                                |
+| `content`  | string   | Yes      | Content/body of the post                         |
+| `community`| integer  | Yes      | ID of the community where the post is created    |
+| `files`    | array    | No       | List of files (optional, supports multiple files)|
 
 * **Response (201 Created):**
 
 ```json
 {
-  "id": 2,
-  "title": "New Post",
-  "content": "Post content",
-  "community": 1,
-  "user": 5,
-  "created_at": "2025-09-02T12:25:00Z",
-  "files": [
-    {"id": 1, "file": "file1.png"}
-  ]
+    "id": 3,
+    "title": "this is the asendfjndmnf",
+    "content": "testing this blog can say it is a good one but foir just teweting",
+    "created_at": "2025-09-03T05:39:49.047699Z",
+    "updated_at": "2025-09-03T05:39:49.047722Z",
+    "votes_like_count": 0,
+    "votes_dislike_count": 0,
+    "saved_count": 0,
+    "community_name": "aa",
+    "files": [],
+    "user_vote": null,
+    "user_saved": false,
+    "user_comments": []
 }
 ```
 
@@ -298,14 +343,170 @@ x-auth-app: <FRONTEND_SECRET>
 
 ## 5. DRF ViewSets (Files, Votes, Comments, Replies, Saves, Community Users)
 
-> All of these use **ModelViewSet**, so standard CRUD is available.
-> **Auth:** Required. Some updates/deletes restricted to owners.
+All of these endpoints are registered via DRF **DefaultRouter**, so they follow standard RESTful patterns.  
+**Auth:** JWT or Session required.  
+**Note:** Updates & deletes are restricted to owners or related post/comment owners where specified.
 
-* **Files:** `/files/` – Create & list only, no update/delete
-* **Votes:** `/votes/` – Create, update/delete only by owner
-* **Comments:** `/comments/` – Create, delete only by author or post author
-* **Replies:** `/replies/` – Create, delete only by author or comment/post author
-* **Comment Votes:** `/comment-votes/` – Create/update by user, delete by owner
-* **Comment Reply Votes:** `/comment-reply-votes/` – Same as above
-* **Saved Posts:** `/saved-posts/` – Create/delete by owner only
-* **Community Users:** `/community-users/` – Create/delete by owner only
+---
+
+### 5.1 Files
+**Endpoint:** `/files/`
+
+| Method | Path              | Description |
+|--------|------------------|-------------|
+| `POST` | `/files/`        | Upload a file for a post. |
+| `GET`  | `/files/`        | List all uploaded files (filtered by permissions). |
+
+🔒 **No update/delete allowed.**
+
+**Example `POST /files/`:**
+```json
+{
+  "post": 12,
+  "file": "binary file upload"
+}
+```
+
+---
+
+### 5.2 Votes (on Posts)
+**Endpoint:** `/votes/`
+
+| Method   | Path              | Description |
+|----------|------------------|-------------|
+| `POST`   | `/votes/`        | Add an upvote/downvote to a post. |
+| `PUT`    | `/votes/{id}/`   | Update a vote (change upvote ↔ downvote). |
+| `DELETE` | `/votes/{id}/`   | Remove your vote. |
+
+🔒 Only the **owner** can update or delete their vote.
+
+**Example `POST /votes/`:**
+```json
+{
+  "post": 12,
+  "value": 1
+}
+```
+
+---
+
+### 5.3 Comments
+**Endpoint:** `/comments/`
+
+| Method   | Path               | Description |
+|----------|-------------------|-------------|
+| `POST`   | `/comments/`      | Add a comment to a post. |
+| `GET`    | `/comments/`      | List all comments. |
+| `DELETE` | `/comments/{id}/` | Delete comment (by author or post author). |
+
+**Example `POST /comments/`:**
+```json
+{
+  "post": 12,
+  "content": "Nice post!",
+  "tag": 45
+}
+```
+
+---
+
+### 5.4 Replies (to Comments)
+**Endpoint:** `/replies/`
+
+| Method   | Path              | Description |
+|----------|------------------|-------------|
+| `POST`   | `/replies/`      | Add a reply to a comment. |
+| `GET`    | `/replies/`      | List replies. |
+| `DELETE` | `/replies/{id}/` | Delete reply (by reply author, comment author, or post author). |
+
+**Example `POST /replies/`:**
+```json
+{
+  "comment": 88,
+  "content": "Totally agree!",
+  "tag": 45
+}
+```
+
+---
+
+### 5.5 Comment Votes
+**Endpoint:** `/comment-votes/`
+
+| Method   | Path                     | Description |
+|----------|-------------------------|-------------|
+| `POST`   | `/comment-votes/`       | Add an upvote/downvote on a comment. |
+| `PUT`    | `/comment-votes/{id}/`  | Update your vote. |
+| `DELETE` | `/comment-votes/{id}/`  | Remove your vote. |
+
+🔒 Only the **owner** can update/delete.
+
+**Example `POST /comment-votes/`:**
+```json
+{
+  "comment": 88,
+  "value": -1
+}
+```
+
+---
+
+### 5.6 Comment Reply Votes
+**Endpoint:** `/comment-reply-votes/`
+
+| Method   | Path                          | Description |
+|----------|------------------------------|-------------|
+| `POST`   | `/comment-reply-votes/`      | Add an upvote/downvote on a reply. |
+| `PUT`    | `/comment-reply-votes/{id}/` | Update your vote. |
+| `DELETE` | `/comment-reply-votes/{id}/` | Remove your vote. |
+
+🔒 Only the **owner** can update/delete.
+
+**Example `POST /comment-reply-votes/`:**
+```json
+{
+  "reply": 44,
+  "value": 1
+}
+```
+
+---
+
+### 5.7 Saved Posts
+**Endpoint:** `/saved-posts/`
+
+| Method   | Path                      | Description |
+|----------|--------------------------|-------------|
+| `POST`   | `/saved-posts/`          | Save a post for the logged-in user. |
+| `DELETE` | `/saved-posts/{id}/`     | Unsave a post. |
+| `GET`    | `/saved-posts/`          | List saved posts of the user. |
+
+🔒 Only the **owner** can create/delete saves.
+
+**Example `POST /saved-posts/`:**
+```json
+{
+  "post": 12
+}
+```
+
+---
+
+### 5.8 Community Users (Roles in Community)
+**Endpoint:** `/community-users/`
+
+| Method   | Path                       | Description |
+|----------|---------------------------|-------------|
+| `POST`   | `/community-users/`       | Join a community (default role = member). |
+| `DELETE` | `/community-users/{id}/`  | Leave a community. |
+| `GET`    | `/community-users/`       | List all community memberships. |
+
+🔒 Only the **user** can join/leave themselves (admins can remove members).
+
+**Example `POST /community-users/`:**
+```json
+{
+  "community": 5,
+  "role": "member"
+}
+```

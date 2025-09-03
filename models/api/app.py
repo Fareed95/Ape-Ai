@@ -319,7 +319,6 @@ def generate_roadmap_first_component():
             }
         }
 
-        # Save the first component's data in the database
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
@@ -422,7 +421,6 @@ def update_roadmap_completion(roadmap_id):
             if not cursor.fetchone():
                 return jsonify({"error": "Roadmap not found"}), 404
 
-            # Update the is_completed field
             cursor.execute(
                 "UPDATE roadmap SET is_completed = %s WHERE id = %s;",
                 (is_completed, roadmap_id)
@@ -541,7 +539,6 @@ def get_roadmap_component(roadmap_id):
     except Exception as e:
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
     
-
 @app.route("/testseries", methods=["POST"])
 def test_series_api():
     """

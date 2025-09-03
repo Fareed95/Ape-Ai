@@ -18,15 +18,12 @@ from django.core.mail import EmailMessage
 from django.utils.html import strip_tags
 import tempfile
 from django.shortcuts import get_object_or_404
+from utils.usercheck import authenticate_request
 
 class CertificateView(APIView):
-    def get(self, request):
-        certificates = Certificate.objects.all()
-        serializer = CertificateSerializer(certificates, many=True)
-        return Response(serializer.data)
 
     def post(self, request):
-        serializer = CertificateSerializer(data=request.data)
+        user = authenticate_request(request, True)
         if serializer.is_valid():
             certificate = serializer.save()
 
