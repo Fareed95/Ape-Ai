@@ -31,9 +31,9 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('videos'); // 'videos', 'overview', 'materials', 'quiz'
   const editorRef = useRef(null);
   const router = useRouter();
-  const DJANGO_API_SERVER = process.env.NEXT_PUBLIC_DJANGO_API_SERVER;
+  // const DJANGO_API_SERVER = process.env.NEXT_PUBLIC_DJANGO_API_SERVER;
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
-  console.log("Hello", contextFirstRoadmap)
+  // console.log("Hello", contextFirstRoadmap)
 
   useEffect(() => {
     if (roadmap?.roadmap_id) {
