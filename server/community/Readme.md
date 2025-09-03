@@ -3,7 +3,6 @@ This API allows management of **community**, **post inside communities**, and **
 
 Base URL: `/api/community/`
 
-
 ## Authentication
 
 * All endpoints require **JWT authentication**.
@@ -510,3 +509,5 @@ All of these endpoints are registered via DRF **DefaultRouter**, so they follow 
   "role": "member"
 }
 ```
+
+

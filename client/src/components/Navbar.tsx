@@ -80,7 +80,8 @@ function Navbar() {
   const authMenuItems = [
     { label: "Home", href: user?.is_company ? "/CompanyMain" : "/Main", icon: "home" },
     { label: "About", href: "/About", icon: "info" },
-    { label: "Community", href: "/ChatRoom/django", icon: "users" },
+    { label: "Community", href: "/Community", icon: "users" },
+    { label: "Feed", href: "/Feed", icon: "book" },
   ];
   
   const nonAuthMenuItems = [

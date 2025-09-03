@@ -67,6 +67,14 @@ class CommunityService {
     return response.json();
   }
 
+  async getCommunity(token: string, id: number | string) {
+    const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.DETAIL(id)), {
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to fetch community');
+    return response.json();
+  }
+
   async createCommunity(token: string, data: CommunityData, profilePicture?: File) {
     const formData = new FormData();
     formData.append("name", data.name);
@@ -96,7 +104,7 @@ class CommunityService {
 
     const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.DETAIL(id)), {
       method: 'PUT',
-      headers: { ...getAuthHeaders(token) },
+      headers: getAuthMultipartHeaders(token),
       body: formData,
     });
 
@@ -165,6 +173,14 @@ class CommunityService {
     return response.json();
   }
 
+  async listFiles(token: string) {
+    const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.FILES), {
+      headers: getAuthMultipartHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to list files');
+    return response.json();
+  }
+
   async updatePost(token: string, id: number, data: Partial<PostData>) {
     const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.POST_DETAIL(id)), {
       method: 'PUT',
@@ -187,6 +203,13 @@ class CommunityService {
   // -----------------------
   // Comments & Replies
   // -----------------------
+  async listComments(token: string) {
+    const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.COMMENTS), {
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to list comments');
+    return response.json();
+  }
   async createComment(token: string, data: CommentData) {
     const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.COMMENTS), {
       method: 'POST',
@@ -216,6 +239,14 @@ class CommunityService {
     return response.json();
   }
 
+  async listReplies(token: string) {
+    const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.REPLIES), {
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to list replies');
+    return response.json();
+  }
+
   async deleteReply(token: string, id: number) {
     const response = await fetch(getApiUrl(`${API_CONFIG.COMMUNITY.REPLIES}${id}/`), {
       method: 'DELETE',
@@ -238,6 +269,25 @@ class CommunityService {
     return response.json();
   }
 
+  async updatePostVote(token: string, id: number, value: number) {
+    const response = await fetch(getApiUrl(`${API_CONFIG.COMMUNITY.VOTES}${id}/`), {
+      method: 'PUT',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ value }),
+    });
+    if (!response.ok) throw new Error('Failed to update vote');
+    return response.json();
+  }
+
+  async deletePostVote(token: string, id: number) {
+    const response = await fetch(getApiUrl(`${API_CONFIG.COMMUNITY.VOTES}${id}/`), {
+      method: 'DELETE',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to delete vote');
+    return true;
+  }
+
   async voteComment(token: string, data: CommentVoteData) {
     const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.COMMENT_VOTES), {
       method: 'POST',
@@ -248,6 +298,25 @@ class CommunityService {
     return response.json();
   }
 
+  async updateCommentVote(token: string, id: number, value: number) {
+    const response = await fetch(getApiUrl(`${API_CONFIG.COMMUNITY.COMMENT_VOTES}${id}/`), {
+      method: 'PUT',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ value }),
+    });
+    if (!response.ok) throw new Error('Failed to update comment vote');
+    return response.json();
+  }
+
+  async deleteCommentVote(token: string, id: number) {
+    const response = await fetch(getApiUrl(`${API_CONFIG.COMMUNITY.COMMENT_VOTES}${id}/`), {
+      method: 'DELETE',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to delete comment vote');
+    return true;
+  }
+
   async voteReply(token: string, data: ReplyVoteData) {
     const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.COMMENT_REPLY_VOTES), {
       method: 'POST',
@@ -256,6 +325,25 @@ class CommunityService {
     });
     if (!response.ok) throw new Error('Failed to vote reply');
     return response.json();
+  }
+
+  async updateReplyVote(token: string, id: number, value: number) {
+    const response = await fetch(getApiUrl(`${API_CONFIG.COMMUNITY.COMMENT_REPLY_VOTES}${id}/`), {
+      method: 'PUT',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ value }),
+    });
+    if (!response.ok) throw new Error('Failed to update reply vote');
+    return response.json();
+  }
+
+  async deleteReplyVote(token: string, id: number) {
+    const response = await fetch(getApiUrl(`${API_CONFIG.COMMUNITY.COMMENT_REPLY_VOTES}${id}/`), {
+      method: 'DELETE',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to delete reply vote');
+    return true;
   }
 
   // -----------------------
@@ -280,6 +368,14 @@ class CommunityService {
     return true;
   }
 
+  async listSavedPosts(token: string) {
+    const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.SAVED_POSTS), {
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to fetch saved posts');
+    return response.json();
+  }
+
   // -----------------------
   // Role Management
   // -----------------------
@@ -290,6 +386,36 @@ class CommunityService {
       body: JSON.stringify(data),
     });
     if (!response.ok) throw new Error('Failed to assign role');
+    return response.json();
+  }
+
+  // -----------------------
+  // Community Users (Join/Leave/List)
+  // -----------------------
+  async joinCommunity(token: string, communityId: number) {
+    const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.COMMUNITY_USERS), {
+      method: 'POST',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ community: communityId, role: 'member' }),
+    });
+    if (!response.ok) throw new Error('Failed to join community');
+    return response.json();
+  }
+
+  async leaveCommunity(token: string, membershipId: number) {
+    const response = await fetch(getApiUrl(`${API_CONFIG.COMMUNITY.COMMUNITY_USERS}${membershipId}/`), {
+      method: 'DELETE',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to leave community');
+    return true;
+  }
+
+  async listCommunityUsers(token: string) {
+    const response = await fetch(getApiUrl(API_CONFIG.COMMUNITY.COMMUNITY_USERS), {
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) throw new Error('Failed to fetch community users');
     return response.json();
   }
 

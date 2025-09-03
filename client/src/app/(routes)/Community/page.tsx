@@ -1,124 +1,139 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useAuth } from '@/context/AuthContext';
 import { communityService, CommunityData } from '@/api/CommunityService';
 
-export default function CommunityPage() {
-  const [communities, setCommunities] = useState<CommunityData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
+export default function Page() {
+  const { isAuthenticated, token } = useAuth();
+  const [communities, setCommunities] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Create community form state
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [profilePic, setProfilePic] = useState<File | null>(null);
+  const [showCreate, setShowCreate] = useState<boolean>(false);
+  const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [profilePicture, setProfilePicture] = useState<File | undefined>(undefined);
+  const [creating, setCreating] = useState<boolean>(false);
 
-  // Get token from localStorage
   useEffect(() => {
-    const storedToken = localStorage.getItem('auth_token');
-    if (storedToken) setToken(storedToken);
-  }, []);
-
-  const fetchCommunities = async () => {
-    if (!token) return;
-    setLoading(true);
-    try {
-      const data = await communityService.getCommunities(token);
-      setCommunities(data);
-    } catch (err) {
-      console.error(err);
-    }
-    setLoading(false);
-  };
+    const fetchCommunities = async () => {
+      if (!token) { setLoading(false); return; }
+      try {
+        setLoading(true);
+        const data = await communityService.getCommunities(token);
+        setCommunities(Array.isArray(data) ? data : []);
+      } catch (e: any) {
+        setError(e?.message || 'Failed to load communities');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCommunities();
+  }, [token]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
-
     try {
-      const newCommunity = await communityService.createCommunity(
-        token,
-        { name, description },
-        profilePic || undefined
-      );
-      setCommunities((prev) => [...prev, newCommunity]);
+      setCreating(true);
+      const payload: CommunityData = { name, description } as CommunityData;
+      const created = await communityService.createCommunity(token, payload, profilePicture);
+      setCommunities(prev => [created, ...prev]);
+      setShowCreate(false);
       setName('');
       setDescription('');
-      setProfilePic(null);
-    } catch (err) {
-      console.error(err);
+      setProfilePicture(undefined);
+    } catch (e: any) {
+      setError(e?.message || 'Failed to create community');
+    } finally {
+      setCreating(false);
     }
   };
 
-  useEffect(() => {
-    if (token) fetchCommunities();
-  }, [token]);
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-5xl mx-auto px-4 py-10">
+        <h1 className="text-2xl font-semibold mb-2">Communities</h1>
+        <p className="text-gray-400">Please login to view and create communities.</p>
+        <Link className="text-blue-400 underline" href="/Login">Go to Login</Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Communities</h1>
-
-      {/* Create Community */}
-      <form
-        onSubmit={handleCreate}
-        className="mb-6 flex flex-col gap-2 border p-4 rounded-lg shadow"
-      >
-        <input
-          type="text"
-          placeholder="Community Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border p-2 rounded"
-          required
-        />
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) =>
-            e.target.files && setProfilePic(e.target.files[0])
-          }
-        />
+    <div className="max-w-6xl mx-auto px-4 py-10 mt-24">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-semibold">Communities</h1>
         <button
-          type="submit"
-          className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          onClick={() => setShowCreate(!showCreate)}
+          className="px-4 py-2 rounded-md bg-white/10 hover:bg-white/20"
         >
-          Create Community
+          {showCreate ? 'Close' : 'Create Community'}
         </button>
-      </form>
+      </div>
 
-      {/* Community List */}
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <ul className="space-y-4">
-          {communities.map((comm) => (
-            <li
-              key={comm.id}
-              className="border p-4 rounded hover:shadow cursor-pointer"
+      {showCreate && (
+        <form onSubmit={handleCreate} className="mb-8 p-4 border border-gray-700 rounded-lg">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <input
+              className="px-3 py-2 rounded bg-black/30 border border-gray-700"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <input
+              className="px-3 py-2 rounded bg-black/30 border border-gray-700"
+              placeholder="Description (optional)"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <input
+              className="sm:col-span-2 px-3 py-2 rounded bg-black/30 border border-gray-700"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setProfilePicture(e.target.files?.[0])}
+            />
+          </div>
+          <div className="mt-4">
+            <button
+              type="submit"
+              disabled={creating}
+              className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-50"
             >
-              <a href={`/Community/${comm.id}`} className="flex items-center gap-4">
-                {comm.id && (
-                  <img
-                    src={`/api/community/files/${comm.id}`} // Backend should serve profile_picture here
-                    alt="Profile"
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                )}
-                <div>
-                  <h2 className="font-bold">{comm.name}</h2>
-                  <p className="text-gray-600">{comm.description}</p>
-                </div>
-              </a>
-            </li>
-          ))}
-        </ul>
+              {creating ? 'Creating...' : 'Create'}
+            </button>
+          </div>
+        </form>
       )}
+
+      {loading && <p className="text-gray-400">Loading...</p>}
+      {error && <p className="text-rose-400 mb-4">{error}</p>}
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {communities.map((c) => (
+          <Link key={c.id} href={`/Community/${c.id}`} className="block border border-gray-700 rounded-lg hover:border-gray-500 transition-colors">
+            <div className="p-4 flex items-start gap-3">
+              {c.profile_picture ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={c.profile_picture} alt={c.name} className="w-12 h-12 rounded object-cover" />
+              ) : (
+                <div className="w-12 h-12 rounded bg-white/10 flex items-center justify-center">{c.name?.[0]?.toUpperCase() || 'C'}</div>
+              )}
+              <div>
+                <div className="font-semibold">{c.name}</div>
+                {c.description && <div className="text-sm text-gray-400 line-clamp-2">{c.description}</div>}
+                {typeof c.total_members_count !== 'undefined' && (
+                  <div className="text-xs text-gray-500 mt-1">Members: {c.total_members_count}</div>
+                )}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
