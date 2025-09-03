@@ -41,22 +41,24 @@ export default function Home() {
   const [showCertificateModal, setShowCertificateModal] = useState(false);
 
   useEffect(() => {
-    if (roadmap?.roadmap_id) {
-      setRoadmapId(roadmap.roadmap_id);
-      fetchRoadmapData(roadmap.roadmap_id);
-    } else {
-      router.push('/');
+    // Guard against null/undefined roadmap
+    if (roadmap && typeof roadmap === 'object' && (roadmap as any).roadmap_id != null) {
+      const id = (roadmap as any).roadmap_id as number;
+      setRoadmapId(id);
+      fetchRoadmapData(id);
     }
   }, [roadmap]);
 
   useEffect(() => {
-    if (contextRoadmap != '') {
+    const hasValidContextRoadmap =
+      contextRoadmap && typeof contextRoadmap === 'object' && (contextRoadmap as any).roadmap_id != null;
+
+    if (hasValidContextRoadmap) {
+      const id = (contextRoadmap as any).roadmap_id as number;
       showSuccess("Roadmap Generated", "Your roadmap has been successfully generated");
       setTotal((contextRoadmap as any)?.total_components ?? 1);
-      setRoadmapId(contextRoadmap.roadmap_id);
-      fetchRoadmapData(contextRoadmap.roadmap_id);
-    } else {
-      showError("Roadmap Not Generated", "Your roadmap has not been generated");
+      setRoadmapId(id);
+      fetchRoadmapData(id);
     }
   }, [contextRoadmap]);
   
@@ -75,9 +77,16 @@ export default function Home() {
     try {
       if (componentNumber == 0) {
         showSuccess("First Component Data", "Your first component data has been successfully set");
-        console.log("Setting first component data:", roadmap.first_component);
-        setComponentData(roadmap.first_component);
+        console.log("Setting first component data:", roadmap?.first_component);
+        if (roadmap && (roadmap as any).first_component) {
+          setComponentData((roadmap as any).first_component);
+        } else {
+          setComponentData(null);
+        }
       } else {
+        if (roadmapId == null) {
+          throw new Error('Invalid roadmapId');
+        }
         const response = await fetch(`https://model-ape.crodlin.in/roadmaps/${roadmapId}/component`, {
           method: 'POST',
           headers: {
@@ -107,6 +116,9 @@ export default function Home() {
 
   const fetchRoadmapData = async (roadmapId : number) => {
     try {
+      if (roadmapId == null) {
+        throw new Error('Missing roadmapId');
+      }
       const response = await fetch(`https://model-ape.crodlin.in/roadmaps/${roadmapId}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -131,7 +143,7 @@ export default function Home() {
   const handleNextComponent = async () => {
     console.log("Totals", total);
     
-   if (currentComponentIndex + 1 < total && contextRoadmap!= '') {
+   if (currentComponentIndex + 1 < (total as number) && roadmapId != null) {
       console.log("Current Component Index", currentComponentIndex);
       console.log("roadmapId", roadmapId);
       try {
