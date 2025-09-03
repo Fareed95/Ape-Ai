@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useUserContext } from '@/context/UserInfo';
+import { useToast } from '@/context/ToastContext';
+
 
 type RecommendedInternship = {
   id: number;
@@ -24,10 +26,13 @@ export default function RecommendInternship() {
   const [items, setItems] = useState<RecommendedInternship[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { showSuccess, showError, showInfo, showWarning } = useToast();
 
   const keyword = useMemo(() => (contextinput || '').toString().trim(), [contextinput]);
 
   useEffect(() => {
+    console.log(keyword)
+  showInfo("keyword sending", keyword);
     const fetchInternships = async () => {
       if (!keyword) {
         setItems([]);
@@ -36,7 +41,7 @@ export default function RecommendInternship() {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch('https://api-ape.crodlin.in/recommended-internship/', {
+        const response = await fetch('https://api-ape.crodlin.in/api/recommended-internship/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
