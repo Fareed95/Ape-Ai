@@ -15,6 +15,10 @@ const SearchAssistant = forwardRef((props : any, ref : any) => {
   const controls = useAnimation();
   const { contextemail } = useUserContext();
 
+  function generateSixDigitCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
   const handlePsychologicalConversation = async (query : string) => {
     try {
       const response = await fetch('http://localhost:8080/api/psychology_chat_bot/', {
@@ -25,6 +29,7 @@ const SearchAssistant = forwardRef((props : any, ref : any) => {
         body: JSON.stringify({
           email: contextemail,
           user_input: query,
+          session_id: generateSixDigitCode
         }),
       });
 
