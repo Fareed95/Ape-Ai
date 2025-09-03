@@ -210,25 +210,22 @@ def generate_roadmap_first_component():
         result = roadmap(input_value=input_value)
         # print(result)
         result_json = json.loads(result)
-        print(result_json)
+        # print(result_json)
         lenght = len(result_json)
         first_name = result_json[0]['name']
         description = result_json[0]['description']
         document = result_json[0]['document']
         test_series = result_json[0]['test_series']
         
-            
-        # Debugging: Print the roadmap_result to check its format
-        print("Roadmap Result:", first_name)
 
         # Get YouTube search query for the first component
         query = search_query(input_value=str(first_name))
         search_results = executor.submit(youtube_search, query)
         search_results = search_results.result()
-
-        # Get the list of video URLs for the first component
-        best_videos = youtube_filteration_best(main_topic=extractor, sub_topic=first_name, json_field=search_results)
-
+        try :
+            best_videos = youtube_filteration_best(main_topic=extractor, sub_topic=first_name, json_field=search_results)
+        except Exception as e: 
+            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         # Prepare the response for the first component
         first_component_response = {
             "total_components": lenght,
@@ -622,6 +619,6 @@ def is_response_function():
     result = is_response(prompt)
     print(result)
     return jsonify({"response": result})
-# if __name__ == '__main__':
-#     create_roadmap_table()  # Ensure roadmap table is created
-#     app.run(port=8001,debug=True) 
+if __name__ == '__main__':
+    # create_roadmap_table()  # Ensure roadmap table is created
+    app.run(port=8001,debug=True) 

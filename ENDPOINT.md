@@ -21,8 +21,12 @@ The documentation is divided into three main sections:
 
 4. **Companies and Internship**
   It manages the internship data and the company data 
-  🔗 [Ai Interview API Documentation](server/company/README.md)
+  🔗 [Companies and Internship API Documentation](server/company/README.md)
 
+
+5. **Psychological chat bot**
+  It manages the docuemntation for the psychollogical chat bot in the home page 
+  🔗 [Psychological Chat Bot Documentation](Chat_bots/psychological_bot/README.md)
 ---
 
 ## Contact

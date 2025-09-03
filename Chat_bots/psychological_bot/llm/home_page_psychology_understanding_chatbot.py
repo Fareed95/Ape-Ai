@@ -49,7 +49,9 @@ def psycholgy_chat_bot( user_input=None, summary_of_previous_chats=None, latest_
                             fallback_to_env_vars=True, # False by default
                             tweaks=TWEAKS)
     chat_bot_response = result[0].outputs[0].results['text']
+    print(chat_bot_response)
     chat_bot_response = chat_bot_response.text
+    print(chat_bot_response)
 
     summary = result[0].outputs[1].results['text']
     summary = summary.text
@@ -62,7 +64,7 @@ if __name__=='__main__':
 
     latest_chat = '''
     user - So I want to go with ai with data entry so what should I chose ?
-    bot - ou're interested in combining AI with data entry. That's a great approach. Based on your interest, I'd recommend the following options:
+    bot - you're interested in combining AI with data entry. That's a great approach. Based on your interest, I'd recommend the following options:
 
 1. **Automated Data Entry with AI**: Explore using AI-powered tools like Google Cloud's AutoML, Microsoft Power Automate with AI Builder, or Automation Anywhere with AI capabilities. These tools can help automate data entry tasks, reduce errors, and increase efficiency.
 2. **Data Entry with Machine Learning**: Focus on learning machine learning concepts and techniques to develop custom data entry solutions. You can use libraries like scikit-learn, TensorFlow, or PyTorch to build models that can extract data from various sources and perform data entry tasks.
@@ -83,6 +85,7 @@ Which option resonates with you the most?
     To further your learning, you can choose the option that best suits your interests and goals. If you have any questions or need more information, feel free to ask.
 
     '''
+    print(os.getenv("GROQ_API_KEY"))
     chat_bot_response, summary = psycholgy_chat_bot( user_input=user_input, latest_chat=latest_chat, summary_of_previous_chats=summary_of_previous_chats)
     print(f'chatbot response - {chat_bot_response}')  # prints the response of the chatbot
     print(f' summary - {summary}')  # prints the summary of the chat

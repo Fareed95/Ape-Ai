@@ -1,0 +1,198 @@
+{
+    "total_components": 4,
+    "roadmap_name": "flask",
+    "roadmap": [
+        {
+            "name": "Python Basics",
+            "description": "Learn the fundamentals of Python programming language, including data types, variables, control structures, functions, and modules.",
+            "document": "https://docs.python.org/3/tutorial/index.html",
+            "test_series": [
+                {
+                    "question": "What is the output of the following Python code: print(5 + 3)?",
+                    "options": [
+                        "8",
+                        "10",
+                        "12",
+                        "15"
+                    ],
+                    "answer": "8"
+                },
+                {
+                    "question": "What is the purpose of the 'if' statement in Python?",
+                    "options": [
+                        "To print a message",
+                        "To check a condition",
+                        "To assign a value to a variable",
+                        "To create a loop"
+                    ],
+                    "answer": "To check a condition"
+                },
+                {
+                    "question": "What is the difference between 'list' and 'tuple' in Python?",
+                    "options": [
+                        "List is mutable and tuple is immutable",
+                        "List is immutable and tuple is mutable",
+                        "List is a collection of characters and tuple is a collection of numbers",
+                        "List is a collection of numbers and tuple is a collection of characters"
+                    ],
+                    "answer": "List is mutable and tuple is immutable"
+                }
+            ]
+        },
+        {
+            "name": "Web Development Basics",
+            "description": "Learn the basics of web development, including HTTP requests, responses, and web frameworks.",
+            "document": "https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web",
+            "test_series": [
+                {
+                    "question": "What is the HTTP method used to retrieve data from a server?",
+                    "options": [
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE"
+                    ],
+                    "answer": "GET"
+                },
+                {
+                    "question": "What is the purpose of the 'request' object in a web framework?",
+                    "options": [
+                        "To send data to the server",
+                        "To receive data from the server",
+                        "To store data in a database",
+                        "To authenticate users"
+                    ],
+                    "answer": "To receive data from the server"
+                },
+                {
+                    "question": "What is the difference between 'GET' and 'POST' requests?",
+                    "options": [
+                        "GET is used for retrieving data and POST is used for sending data",
+                        "GET is used for sending data and POST is used for retrieving data",
+                        "GET is used for updating data and POST is used for creating data",
+                        "GET is used for creating data and POST is used for updating data"
+                    ],
+                    "answer": "GET is used for retrieving data and POST is used for sending data"
+                }
+            ]
+        },
+        {
+            "name": "Flask Basics",
+            "description": "Learn the basics of the Flask web framework, including routing, templates, and request handling.",
+            "document": "https://flask.palletsprojects.com/en/2.0.x/",
+            "test_series": [
+                {
+                    "question": "What is the purpose of the '@app.route()' decorator in Flask?",
+                    "options": [
+                        "To handle HTTP requests",
+                        "To render templates",
+                        "To store data in a database",
+                        "To authenticate users"
+                    ],
+                    "answer": "To handle HTTP requests"
+                },
+                {
+                    "question": "What is the difference between 'render_template()' and 'redirect()' in Flask?",
+                    "options": [
+                        "render_template() is used for rendering templates and redirect() is used for redirecting to another URL",
+                        "render_template() is used for redirecting to another URL and redirect() is used for rendering templates",
+                        "render_template() is used for sending data to the client and redirect() is used for sending data to the server",
+                        "render_template() is used for sending data to the server and redirect() is used for sending data to the client"
+                    ],
+                    "answer": "render_template() is used for rendering templates and redirect() is used for redirecting to another URL"
+                },
+                {
+                    "question": "What is the purpose of the 'request' object in Flask?",
+                    "options": [
+                        "To send data to the server",
+                        "To receive data from the server",
+                        "To store data in a database",
+                        "To authenticate users"
+                    ],
+                    "answer": "To receive data from the server"
+                }
+            ]
+        },
+        {
+            "name": "Flask Advanced",
+            "description": "Learn advanced concepts in Flask, including error handling, authentication, and API development.",
+            "document": "https://flask.palletsprojects.com/en/2.0.x/patterns/apierrors/",
+            "test_series": [
+                {
+                    "question": "What is the purpose of the 'try-except' block in Flask?",
+                    "options": [
+                        "To handle HTTP requests",
+                        "To render templates",
+                        "To store data in a database",
+                        "To handle exceptions"
+                    ],
+                    "answer": "To handle exceptions"
+                },
+                {
+                    "question": "What is the difference between 'basic_auth()' and 'login_required()' in Flask?",
+                    "options": [
+                        "basic_auth() is used for basic authentication and login_required() is used for login authentication",
+                        "basic_auth() is used for login authentication and login_required() is used for basic authentication",
+                        "basic_auth() is used for storing data in a database and login_required() is used for retrieving data from a database",
+                        "basic_auth() is used for retrieving data from a database and login_required() is used for storing data in a database"
+                    ],
+                    "answer": "basic_auth() is used for basic authentication and login_required() is used for login authentication"
+                },
+                {
+                    "question": "What is the purpose of the 'Blueprint' in Flask?",
+                    "options": [
+                        "To handle HTTP requests",
+                        "To render templates",
+                        "To store data in a database",
+                        "To organize code"
+                    ],
+                    "answer": "To organize code"
+                }
+            ]
+        }
+    ],
+    "first_component": {
+        "name": "Python Basics",
+        "description": "Learn the fundamentals of Python programming language, including data types, variables, control structures, functions, and modules.",
+        "document": "https://docs.python.org/3/tutorial/index.html",
+        "videos": [
+            "https://www.youtube.com/embed/fWjsdhR3z3c",
+            "https://www.youtube.com/embed/vLqTf2b6GZw",
+            "https://www.youtube.com/embed/DInMru2Eq6E",
+            "https://www.youtube.com/embed/Sl4zqWLC9Xw",
+            "https://www.youtube.com/embed/CcLdX6dE6xw"
+        ],
+        "test_series": [
+            {
+                "question": "What is the output of the following Python code: print(5 + 3)?",
+                "options": [
+                    "8",
+                    "10",
+                    "12",
+                    "15"
+                ],
+                "answer": "8"
+            },
+            {
+                "question": "What is the purpose of the 'if' statement in Python?",
+                "options": [
+                    "To print a message",
+                    "To check a condition",
+                    "To assign a value to a variable",
+                    "To create a loop"
+                ],
+                "answer": "To check a condition"
+            },
+            {
+                "question": "What is the difference between 'list' and 'tuple' in Python?",
+                "options": [
+                    "List is mutable and tuple is immutable",
+                    "List is immutable and tuple is mutable",
+                    "List is a collection of characters and tuple is a collection of numbers",
+                    "List is a collection of numbers and tuple is a collection of characters"
+                ],
+                "answer": "List is mutable and tuple is immutable"
+            }
+        ]
+    }
+}

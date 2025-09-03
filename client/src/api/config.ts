@@ -1,7 +1,7 @@
 // API Configuration
 export const API_CONFIG = {
   BASE_URL: 'http://localhost:8000',
-  MODEL_API_SERVER: process.env.NEXT_PUBLIC_MODEL_API_SERVER || 'https://model-ape.crodlin.in',
+  MODEL_API_SERVER: 'http://localhost:8001',
   APE_API_SERVER: process.env.NEXT_PUBLIC_APE_API_SERVER || 'https://api-ape.crodlin.in',
   CHAT_BOTS_API_SERVER: 'https://bot-ape.crodlin.in/',
 
@@ -54,7 +54,7 @@ export const API_CONFIG = {
 
 // Helper function to get full API URL
 export const getApiUrl = (endpoint: string): string => {
-  return `${API_CONFIG.BASE_URL}${endpoint}`;
+  return `${API_CONFIG.APE_API_SERVER}${endpoint}`;
 };
 
 // Helper function to get headers with auth token

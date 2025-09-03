@@ -19,7 +19,7 @@ def youtube_filteration_best(main_topic, sub_topic, json_field):
     TWEAKS = {
     "GroqModel-F4G8v": {
         "groq_api_key": os.getenv("GROQ_API_KEY"),
-        "model_name": "llama3-8b-8192",
+        "model_name": "llama-3.1-8b-instant",
         "temperature": 0.2
     },
     "TextInput-DdJSI": {
@@ -70,6 +70,7 @@ if __name__ == "__main__":
     main_topic = "Python"
     sub_topic = "Python Basics"
     json_field = youtube_search(sub_topic)
+    # print(json_field)
     # print(json_field)
     # json_field = "{'name': 'Python'}"
     print(youtube_filteration_best(main_topic=main_topic,sub_topic= sub_topic,json_field= json_field))  # prints:

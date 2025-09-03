@@ -19,5 +19,6 @@ COPY . /app/
 EXPOSE 8001
 
 # Start the server using app.py inside the api directory
-CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:8001", "--timeout", "500", "api.app:app"]
+CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:8001", "--timeout", "500", "--log-level", "debug", "--access-logfile", "-", "--error-logfile", "-", "api.app:app"]
+
 
