@@ -2,7 +2,7 @@
 export const API_CONFIG = {
   BASE_URL: 'http://localhost:8000',
   MODEL_API_SERVER: 'http://localhost:8001',
-  APE_API_SERVER: 'https://api-ape.crodlin.in',
+  APE_API_SERVER: 'http://localhost:8000',
   CHAT_BOTS_API_SERVER: 'https://bot-ape.crodlin.in/',
 
   // Authentication endpoints

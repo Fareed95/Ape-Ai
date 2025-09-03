@@ -8,6 +8,7 @@ annotated-types==0.7.0
 anthropic==0.42.0
 anyio==4.7.0
 appdirs==1.4.4
+appnope==0.1.4
 asgiref==3.8.1
 assemblyai==0.36.0
 astra-assistants==2.2.7
@@ -58,7 +59,7 @@ coolname==2.2.0
 crewai==0.80.0
 crewai-tools==0.17.0
 cryptography==43.0.3
-cssselect2==0.7.0
+cssselect2==0.8.0
 ctranslate2==4.6.0
 daphne==4.1.2
 dataclasses-json==0.6.7
@@ -111,7 +112,7 @@ FLAML==2.3.3
 Flask==3.1.0
 Flask-Cors==5.0.0
 flatbuffers==24.12.23
-fonttools==4.56.0
+fonttools==4.59.2
 frozendict==2.4.6
 frozenlist==1.5.0
 fsspec==2024.12.0
@@ -438,7 +439,7 @@ validators==0.34.0
 virtualenv==20.26.5
 watchfiles==1.0.3
 wcwidth==0.2.13
-weasyprint==64.0
+weasyprint==66.0
 weaviate-client==4.9.6
 webencodings==0.5.1
 websocket-client==1.8.0

@@ -15,6 +15,7 @@
     "framer-motion": "^11.18.2",
     "gsap": "^3.12.7",
     "lucide-react": "^0.454.0",
+    "mespeak": "^2.0.2",
     "mini-svg-data-uri": "^1.4.4",
     "next": "^15.0.1",
     "next-auth": "^4.24.10",

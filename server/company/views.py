@@ -14,7 +14,6 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from faster_whisper import WhisperModel
 import tempfile
 
-# 🚀 Company Views
 class CompanyView(APIView):
 
     # GET: List all companies or retrieve a single company by ID
