@@ -177,9 +177,9 @@ export default function Page() {
   }, [isSpeaking, ended])
 
   return (
-    <div className="h-[100vh] flex flex-col items-center justify-center gap-4 mt-[5vh]">
+    <div className="h-[100vh] flex flex-col items-center justify-center gap-4 mt-[8vh]">
       {ended ? (
-        <div className="text-yellow-500 font-bold">Interview Ended ✅</div>
+        <div className="text-yellow-500 font-bold">Interview Ended </div>
       ) : Listening ? (
         <div className="text-green-600 font-bold">Listening ...</div>
       ) : isSpeaking ? (
