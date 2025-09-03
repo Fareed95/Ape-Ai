@@ -148,7 +148,6 @@ function CongratulationsPage() {
     }
   }, [roadmap]);
 
-
   // const GetUserTitle = async () => {
   //   try {
   //     const response = await fetch(`https://api-ape.crodlin.in/api/internships/${roadmapId}`, {
@@ -234,35 +233,39 @@ function CongratulationsPage() {
     return "💪";
   };
 
-  const handleApplyForInternships = async () => {
-    try {
-      console.log("Roadmap title:", contextinput);
-      console.log("email:", contextemail);
+  // const handleApplyForInternships = async () => {
+  //   try {
+  //     console.log("Roadmap title:", contextinput);
+  //     console.log("email:", contextemail);
   
-      const response = await fetch(`https://api-ape.crodlin.in/api/apply/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          "internship_title": contextinput,
-          "email": contextemail
-        }), 
-      });
-      console.log(response)
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+  //     const response = await fetch(`https://api-ape.crodlin.in/api/apply/`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         "internship_title": contextinput,
+  //         "email": contextemail
+  //       }), 
+  //     });
+  //     console.log(response)
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
   
-      const result = await response.json();
-      console.log('Application submitted successfully:', result);
-      alert('Successfully applied for internship!');
-      router.push(`/UserInfo/${user?.email}`);
-    } catch (error) {
-      console.error('Error applying for internship:', error);
-      router.push(`/UserInfo/${user?.email}`);
-    }
-  };
+  //     const result = await response.json();
+  //     console.log('Application submitted successfully:', result);
+  //     alert('Successfully applied for internship!');
+  //     router.push(`/UserInfo/${user?.email}`);
+  //   } catch (error) {
+  //     console.error('Error applying for internship:', error);
+  //     router.push(`/UserInfo/${user?.email}`);
+  //   }
+  // };
+
+  const handleDemoInterview = () => {
+    router.push(`/DemoInterview?topic=${encodeURIComponent(contextinput)}`)
+  }
 
   if (isLoading) {
     return <CongratualtionsSkeleton />;
@@ -379,9 +382,9 @@ function CongratulationsPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="w-full sm:w-auto px-6 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded-lg transition-colors border border-neutral-700/50 text-sm sm:text-base"
-            onClick={handleApplyForInternships}
+            onClick={handleDemoInterview}
           >
-            Apply for Internships
+            Demo Interview
           </motion.button>
         </motion.div>
       </motion.div>

@@ -1,8 +1,10 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Orb from '../../../components/orb'
 
 export default function Page() {
+  const searchParams = useSearchParams()
   const [transcript, setTranscript] = useState('')
   const [Response, setResponse] = useState('')
   const [Listening, setListening] = useState(false)
@@ -25,10 +27,9 @@ export default function Page() {
     let payload = { demo_interview: true }
 
     if (QID === null) {
-      // first request
-      payload.Topic = "backend Developer"
+      const topic = searchParams.get('topic')
+      payload.Topic = topic
     } else if (answerText) {
-      // subsequent requests
       payload.question_id = QID
       payload.answer = answerText
     }
@@ -177,7 +178,7 @@ export default function Page() {
   }, [isSpeaking, ended])
 
   return (
-    <div className="h-[100vh] flex flex-col items-center justify-center gap-4 mt-[8vh]">
+    <div className="h-[100vh] flex flex-col items-center justify-center gap-4 mt-[10vh]">
       {ended ? (
         <div className="text-yellow-500 font-bold">Interview Ended </div>
       ) : Listening ? (
