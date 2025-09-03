@@ -197,6 +197,8 @@ class TranscribeAudioView(APIView):
                 tmp.write(chunk)
             tmp_path = tmp.name
 
-        segments, _ = model.transcribe(tmp_path)
+        # Force transcription in English
+        segments, _ = model.transcribe(tmp_path, language="en")
+
         text = " ".join([s.text for s in segments])
         return Response({"text": text})
