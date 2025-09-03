@@ -5,7 +5,7 @@ import { useRoadmap } from '@/context/RoadmapContext';
 import { motion, useScroll, useInView } from "framer-motion";
 import { Star } from 'lucide-react';
 
-const RoadmapNode = ({ title, content, index, isActive, progress, isLocked }) => {
+const RoadmapNode = ({ title, content, index, isActive, progress, isLocked }: { title: string, content: any, index: number, isActive: boolean, progress: number, isLocked: boolean }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
@@ -99,7 +99,7 @@ const RoadmapNode = ({ title, content, index, isActive, progress, isLocked }) =>
             {/* Skills */}
             {content.skills && (
               <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-2">
-                {content.skills.map((skill, idx) => (
+                {content.skills.map((skill: string, idx: number) => (
                   <motion.span
                     key={idx}
                     initial={{ opacity: 0, y: 10 }}
@@ -121,7 +121,7 @@ const RoadmapNode = ({ title, content, index, isActive, progress, isLocked }) =>
   );
 };
 
-function Timeline_roadmap_function({ roadmapData }) {
+function Timeline_roadmap_function({ roadmapData }: { roadmapData: any }) {
   const router = useRouter();
   const { setRoadmap } = useRoadmap();
   const containerRef = useRef(null);
@@ -193,7 +193,7 @@ function Timeline_roadmap_function({ roadmapData }) {
         ref={containerRef}
         className="relative max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-10 backdrop-blur-sm"
       >
-        {roadmapData.roadmap.map((component, index) => (
+        {roadmapData.roadmap.map((component: any, index: number) => (
           <RoadmapNode
             key={index}
             title={component.name}

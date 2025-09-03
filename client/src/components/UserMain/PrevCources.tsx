@@ -3,17 +3,108 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRoadmap } from '@/context/RoadmapContext';
 import { useUserContext } from '@/context/UserInfo';
-import { roadmapService, RoadmapData } from '@/api/roadmap';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 import Masonry from 'react-masonry-css';
 import { ChevronRight, BarChart, FileText, BookOpen, Brain, ArrowRight, Layers, FolderSymlink, Rocket, ArrowDown } from 'lucide-react';
-import HeroBackground from './HeroBackground';
-import CardWithGradientBorder from './CardWithGradientBorder';
-import getProgressGradient from './getProgressGradient';
+
+// Enhanced floating particles background
+const HeroBackground = () => (
+  <div className="absolute inset-0 -z-10 overflow-hidden">
+    <div className="absolute inset-0 bg-neutral-950/90" />
+    <div className="absolute inset-0 bg-grid-small-white/[0.03] -z-10" />
+    <div className="absolute inset-0 bg-dot-white/[0.03] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
+    <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent" />
+    <div className="absolute -top-40 -left-40 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] animate-pulse" />
+    <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] animate-pulse" />
+  </div>
+);
+
+// Move the getProgressGradient function outside of CardWithGradientBorder
+// so it can be used anywhere in the component
+const getProgressGradient = (progress : number) => {
+  if (progress < 30) {
+    return 'from-blue-500 to-purple-500'; 
+  } else {
+    return 'from-fuchsia-500 to-pink-500';
+  }
+};
+
+const CardWithGradientBorder = ({ children, onClick, progress } : { children: React.ReactNode, onClick: () => void, progress: number }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  
+
+  const transformStyle = useTransform(
+    [rotateX, rotateY],
+    // Enhanced 3D effect that's more subtle
+    ([latestRotateX, latestRotateY] : any) => `perspective(1000px) rotateX(${latestRotateX * 0.5}deg) rotateY(${latestRotateY * 0.5}deg)`
+  );
+
+  const updateMousePosition = (e : React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+
+    const rect = (cardRef.current as HTMLDivElement).getBoundingClientRect();
+    
+    // Set mouse position for gradient effect
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+    
+    // Calculate rotations for subtle 3D card tilt effect
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Limit the rotation to a small amount
+    const rotationIntensity = 1.5; // Reduced intensity
+    rotateX.set((centerY - mouseY) / centerY * rotationIntensity);
+    rotateY.set((mouseX - centerX) / centerX * rotationIntensity);
+  };
+  
+  const resetCardRotation = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={updateMousePosition}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        resetCardRotation();
+      }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      style={{ transform: transformStyle }}
+      className="group relative rounded-xl cursor-pointer transition-all duration-500"
+      onClick={onClick}
+    >
+      {/* Animated gradient border */}
+      <motion.div 
+        className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        animate={{
+          opacity: isHovered ? 1 : 0,
+        }}
+      />
+      
+      {/* Content area with glass effect */}
+      <div className="relative bg-neutral-900/80 backdrop-blur-xl border border-white/10 p-5 sm:p-6 rounded-xl z-10 transition-all duration-300 group-hover:border-white/20">
+        {children}
+      </div>
+    </motion.div>
+  );
+};
 
 function PrevCources() {
-  const [roadmaps, setRoadmaps] = useState<RoadmapData[]>([]);
+  const [roadmaps, setRoadmaps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [visibleCourses, setVisibleCourses] = useState(6); // Show 6 courses initially
@@ -21,12 +112,30 @@ function PrevCources() {
   const { setRoadmap } = useRoadmap();
   const { contextemail } = useUserContext();
 
+  const MODEL_API_SERVER = 'http://localhost:8001';
+
   useEffect(() => {
     const fetchRoadmaps = async () => {
       try {
+        console.log(MODEL_API_SERVER)
         setLoading(true);
-        const data = await roadmapService.getUserRoadmaps(contextemail);
+        const response = await fetch(`http://localhost:8001/user-roadmaps`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: contextemail,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch roadmaps');
+        }
+
+        const data = await response.json();
         setRoadmaps(data);
+
         setError(null);
       } catch (err) {
         console.error('Error fetching roadmaps:', err);
@@ -41,7 +150,7 @@ function PrevCources() {
     }
   }, [contextemail]);
 
-  const handleCardClick = async(roadmap: { id: string }) => {
+  const handleCardClick = async(roadmap : any) => {
     setRoadmap({ roadmap_id: roadmap.id });
     router.push('/LearningPrev');
   };
@@ -96,7 +205,7 @@ function PrevCources() {
   };
 
   // Map component icons to different learning areas
-  const getComponentIcon = (componentName: string) => {
+  const getComponentIcon = (componentName : string) => {
     const name = componentName?.toLowerCase() || '';
     if (name.includes('basics') || name.includes('foundation')) return <BookOpen size={16} className="text-blue-400" />;
     if (name.includes('advanced') || name.includes('expert')) return <Brain size={16} className="text-purple-400" />;
@@ -156,7 +265,7 @@ function PrevCources() {
               {/* Only map over visible roadmaps */}
               {roadmaps.slice(0, visibleCourses).map((roadmap, idx) => {
                 // Calculate progress for visual indication
-                const componentsCount = roadmap.roadmap_json?.roadmap_components?.length || 0 as number;
+                const componentsCount = roadmap.roadmap_json?.roadmap_components?.length || 0;
                 const progress = Math.min(componentsCount * 20, 100);
                 
                 return (
@@ -165,14 +274,14 @@ function PrevCources() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + idx * 0.1 }}
                     className="mb-3 sm:mb-4 md:mb-6 lg:mb-8" 
-                    key={`roadmap-${roadmap.id as string}`}
+                    key={`roadmap-${roadmap.id}`}
                   >
                     <CardWithGradientBorder
                       onClick={() => handleCardClick(roadmap)}
                       progress={progress}
                     >
                       <GlowingEffect
-                        spread={50 as number}
+                        spread={50}
                         glow={true}
                         disabled={false}
                         proximity={70}
@@ -183,7 +292,7 @@ function PrevCources() {
                         <div className="space-y-3 sm:space-y-4">
                           <div className="flex justify-between items-start">
                             <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-cyan-400 transition-all duration-300 font-heading line-clamp-2">
-                              {roadmap.name as string}
+                              {roadmap.name}
                             </h3>
                             
                             <div className="relative flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 group-hover:border-white/20 transition-all">
@@ -204,7 +313,7 @@ function PrevCources() {
                       
                         {roadmap.roadmap_json?.roadmap_components?.length > 0 ? (
                           <div className="space-y-2 sm:space-y-3">
-                            {roadmap.roadmap_json.roadmap_components.slice(0, 3).map((component: { name: string; description: string }, index: number) => (
+                            {roadmap.roadmap_json.roadmap_components.slice(0, 3).map((component : any, index : number) => (
                               <motion.div
                                 key={`component-${roadmap.id}-${index}`}
                                 initial={{ opacity: 0, x: -20 }}
@@ -214,15 +323,15 @@ function PrevCources() {
                               >    
                                 <div className="flex items-start gap-2 sm:gap-3">
                                   <div className="p-1.5 sm:p-2 bg-white/5 backdrop-blur-xl rounded-lg border border-white/10 mt-1 flex-shrink-0">
-                                    {getComponentIcon(component.name as string)}
+                                    {getComponentIcon(component.name)}
                                   </div>
                                   
                                   <div className="flex-1 min-w-0">
                                     <h4 className="text-xs sm:text-sm md:text-base font-semibold text-neutral-200 mb-0.5 sm:mb-1 group-hover/card:text-white transition-colors font-heading truncate">
-                                      {component.name as string}
+                                      {component.name}
                                     </h4>
                                     <p className="text-neutral-400 text-xs sm:text-sm line-clamp-2 group-hover/card:text-neutral-300 transition-colors font-sans">
-                                      {component.description as string }
+                                      {component.description}
                                     </p>
                                   </div>
                                 </div>

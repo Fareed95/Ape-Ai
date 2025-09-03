@@ -1,15 +1,12 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { useUserContext } from "@/context/UserInfo";
-import { roadmapService } from "@/api/roadmap";
 import Timeline_roadmap_function from "./Timeline_roadmap";
 import { MultiStepLoader } from "@/components/ui/multi-step-loader";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchAssistant from "@/components/UserMain/SearchAssistant";
-import { useToast } from "@/context/ToastContext";
-import { Search, Sparkles, ArrowRight, TrendingUp } from "lucide-react";
+import { Search, Sparkles, Code, BookOpen, Database, Cloud, Shield, ArrowRight, TrendingUp } from "lucide-react";
 
 function MainInput() {
   const [inputValue, setInputValue] = useState("");
@@ -20,9 +17,7 @@ function MainInput() {
   const [inputFocused, setInputFocused] = useState(false);
 
   const { contextemail, contextisLoggedIn, contextsetRoadmap, contextsetFirstRoadmap } = useUserContext();
-  const searchAssistantRef = useRef<any>(null);
-
-
+  const searchAssistantRef = useRef(null);
 
   const loadingStates = [
     { text: "Analyzing your learning goals..." },
@@ -44,7 +39,7 @@ function MainInput() {
     setInputValue(e.target.value);
   };
 
-  const handleTopicClick = (topic: { id: number, name: string, icon: string }) => {
+  const handleTopicClick = (topic: { name: string }) => {
     setInputValue(topic.name);
     setTriggerSearch(true);
   };
@@ -52,10 +47,6 @@ function MainInput() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!contextisLoggedIn) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Please Login to use this Feature",
-    //   });
       return;
     }
 
@@ -70,11 +61,43 @@ function MainInput() {
 
     while (attempts < MAX_RETRIES && !success) {
       try {
-        const isResponseData = await roadmapService.isResponse(inputValue);
+        const isResponse = await fetch(`http://localhost:8001/is-response`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt: inputValue,
+          }),
+        });
+
+        if (!isResponse.ok) {
+          throw new Error(`HTTP error! Status: ${isResponse.status}`);
+        }
+
+        const isResponseData = await isResponse.json();
         console.log("is-response data:", isResponseData);
 
         if (isResponseData.response === "yes") {
-          const roadmapData = await roadmapService.generateRoadmapFirstComponent(inputValue, contextemail);
+          const roadmapResponse = await fetch(
+            `http://localhost:8001/generate-roadmap-first-component`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                input_value: inputValue,
+                email: contextemail,
+              }),
+            }
+          );
+
+          if (!roadmapResponse.ok) {
+            throw new Error("Failed to generate roadmap");
+          }
+
+          const roadmapData = await roadmapResponse.json();
           setRoadmapData(roadmapData);
           contextsetFirstRoadmap(roadmapData);
 
@@ -83,7 +106,7 @@ function MainInput() {
         } else {
           console.log("Response is not yes");
           if (searchAssistantRef.current) {
-            searchAssistantRef.current.openChat(inputValue);
+            (searchAssistantRef.current as any).openChat(inputValue);
           }
           success = true;
         }
@@ -92,7 +115,6 @@ function MainInput() {
         attempts++;
         if (attempts >= MAX_RETRIES) {
           console.error("Max retries reached. Failed to process request.");
-       
           break;
         }
         await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -114,13 +136,13 @@ function MainInput() {
   useEffect(() => {
     if (triggerSearch) {
       console.log("Triggering search with:", inputValue);
-      onSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>); // Trigger the search process
+      onSubmit({ preventDefault: () => {} } as any); // Trigger the search process
       setTriggerSearch(false); // Reset the trigger
-    }
+    } 
   }, [triggerSearch]);
 
   useEffect(() => {
-        if (!roadmapData?.roadmap_id) return;
+    if (!roadmapData?.roadmap_id) return;
 
     let isMounted = true;
 
@@ -137,7 +159,20 @@ function MainInput() {
             roadmapData.roadmap_id
           );
 
-          const data = await roadmapService.generateRoadmapAll(roadmapData.roadmap_id);
+          const response = await fetch(`http://localhost:8001/generate-roadmap-all`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: roadmapData.roadmap_id }),
+            signal: controller.signal,
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = await response.json();
           console.log("Roadmap all generated successfully:", data);
           success = true;
 
@@ -169,7 +204,7 @@ function MainInput() {
   // Attach the onPromptAccept handler to the SearchAssistant ref
   useEffect(() => {
     if (searchAssistantRef.current) {
-      searchAssistantRef.current.onPromptAccept = handleSuggestedPrompt;
+      (searchAssistantRef.current as any).onPromptAccept = handleSuggestedPrompt;
     }
   }, [searchAssistantRef]);
 
@@ -269,7 +304,7 @@ function MainInput() {
             </div>
             
             <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-              {popularTopics.map((topic: { id: number, name: string, icon: string }) => (
+              {popularTopics.map(topic => (
                 <motion.button
                   key={topic.id}
                   onClick={() => handleTopicClick(topic)}

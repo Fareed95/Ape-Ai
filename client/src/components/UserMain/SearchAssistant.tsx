@@ -4,69 +4,97 @@ import { motion, useAnimation } from 'framer-motion';
 import { Send, Bot, User, Sparkles, ChevronRight, Dot } from 'lucide-react';
 import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { useUserContext } from "@/context/UserInfo";
-import { roadmapService } from "@/api/roadmap";
-import { useToast } from "@/context/ToastContext";
 import ReactMarkdown from 'react-markdown';
 
-const SearchAssistant = forwardRef((props, ref) => {
+const SearchAssistant = forwardRef((props : any, ref : any) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [suggestedPrompt, setSuggestedPrompt] = useState(null);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [suggestedPrompt, setSuggestedPrompt] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const controls = useAnimation();
   const { contextemail } = useUserContext();
-  const { toast } = useToast();
 
-  const handlePsychologicalConversation = async (query) => {
+  const handlePsychologicalConversation = async (query : string) => {
     try {
-      const data = await roadmapService.psychologicalChat(contextemail, query);
+      const response = await fetch('http://localhost:8010/api/psychology_chat_bot/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: contextemail,
+          user_input: query,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch psychological conversation');
+      }
+
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        variant: "destructive",
-        title: "Failed to process request. Please try again.",
-      });
       return null;
     }
   };
 
   const handleMakePrompt = async () => {
     try {
-      const data = await roadmapService.makePrompt(contextemail);
+      const response = await fetch('http://localhost:8010/api/make_prompt/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: contextemail,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch suggested prompt');
+      }
+
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        variant: "destructive",
-        title: "Failed to generate prompt. Please try again.",
-      });
       return null;
     }
   };
 
   const handleDeleteConversation = async () => {
     try {
-      const data = await roadmapService.deleteConversation(contextemail);
+      const response = await fetch('http://localhost:8010/api/delete_conversation/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: contextemail,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete conversation');
+      }
+
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        variant: "destructive",
-        title: "Failed to delete conversation. Please try again.",
-      });
       return null;
     }
   };
 
-  const simulateBotResponse = async (query) => {
+  const simulateBotResponse = async (query : string) => {
     setIsLoading(true);
 
     const responseData = await handlePsychologicalConversation(query);
 
     if (responseData && responseData.bot_response) {
-      setMessages((prev) => [
+      setMessages((prev : any) => [
         ...prev,
         {
           content: responseData.bot_response,
@@ -81,9 +109,9 @@ const SearchAssistant = forwardRef((props, ref) => {
     setIsLoading(false);
   };
 
-  const openChat = async (message) => {
+  const openChat = async (message : string) => {
     if (message) {
-      setMessages((prev) => [
+      setMessages((prev : any) => [
         ...prev,
         { content: message, isBot: false, timestamp: new Date() },
       ]);
@@ -120,19 +148,19 @@ const SearchAssistant = forwardRef((props, ref) => {
     });
   };
 
-  const handlePromptSelection = async (accept) => {
+  const handlePromptSelection = async (accept : boolean) => {
     if (accept) {
       console.log("Prompt accepted:", suggestedPrompt);
-      if (ref.current && ref.current.onPromptAccept) {
+      if (ref && (ref as any).current && (ref as any).current.onPromptAccept) {
         console.log("Using ref.current.onPromptAccept");
         await handleDeleteConversation();
-        ref.current.onPromptAccept(suggestedPrompt);
+        ((ref as any).current as any).onPromptAccept(suggestedPrompt);
         closeChat();
-      } else if (props.onPromptAccept) {
+      } else if (props && (props as any).onPromptAccept) {
         // Fallback to props if ref method isn't set
         console.log("Using props.onPromptAccept");
         await handleDeleteConversation();
-        props.onPromptAccept(suggestedPrompt);
+        (props as any).onPromptAccept(suggestedPrompt);
         closeChat();
       } else {
         console.error("No prompt accept handler found");
@@ -149,11 +177,11 @@ const SearchAssistant = forwardRef((props, ref) => {
     onPromptAccept: null
   }));
 
-  const handleSearch = async (e) => {
+  const handleSearch = async (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
   
-    setMessages((prev) => [
+    setMessages((prev : any) => [
       ...prev,
       { content: searchQuery, isBot: false, timestamp: new Date() },
     ]);
@@ -164,7 +192,7 @@ const SearchAssistant = forwardRef((props, ref) => {
     await simulateBotResponse(searchQuery);
   
     // Check if the number of user messages (excluding bot responses) is a multiple of 2
-    const userMessageCount = messages.filter((msg) => !msg.isBot).length + 1; // +1 for the current message
+    const userMessageCount = messages.filter((msg : any) => !msg.isBot).length + 1; // +1 for the current message
     
     // Only proceed with prompt suggestion if:
     // 1. User has sent at least 2 messages
@@ -213,7 +241,7 @@ const SearchAssistant = forwardRef((props, ref) => {
 
       {/* Messages Container */}
       <div className="h-[300px] overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-[#2a2a33]/50 scrollbar-track-transparent">
-        {messages.map((message, index) => (
+        {messages.map((message : any, index : number) => (
           <motion.div
             key={index}
             initial={{ opacity: 0, x: message.isBot ? -20 : 20 }}
@@ -298,7 +326,7 @@ const SearchAssistant = forwardRef((props, ref) => {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e : React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
             placeholder="Ask me anything about your learning journey..."
             className="w-full px-4 py-3 bg-[#0f0f13]/90 border border-[#2a2a33]/60 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#3a3a45] text-white placeholder-gray-400 disabled:opacity-50 transition-all duration-200"
             disabled={isLoading}
